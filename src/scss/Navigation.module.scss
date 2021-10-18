@@ -1,0 +1,19 @@
+.header {
+    background-color: #404079;
+    padding: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    padding-bottom: 10px;
+    a {
+        line-height: 1;
+        font-family: 'Pokemon Solid';
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+}

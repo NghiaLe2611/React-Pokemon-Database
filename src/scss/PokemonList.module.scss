@@ -1,0 +1,16 @@
+.wrap-pokemon-list {
+    background-color: #fff;
+    margin-bottom: 100px;
+    border-radius: 4px;
+    padding: 30px;
+}
+
+.list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -20px;
+    >li {
+        width: calc(100% * 1/5 - 20px);
+        margin: 0 0 40px 20px;
+    }
+}

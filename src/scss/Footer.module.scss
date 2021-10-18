@@ -1,0 +1,16 @@
+footer {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    .copy-right {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .reference {
+        font-size: 13px;
+        color: #333;
+        a {
+            color: blue;
+        }
+    }
+}

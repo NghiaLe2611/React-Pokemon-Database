@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    /* font-family: 'Roboto', sans-serif; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Signika', sans-serif;
+    font-weight: 300;
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+a {
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    margin: 0 auto 1rem;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+main {
+    min-height: 100vh;
+}
+
+@font-face {
+    font-family: 'Pokemon Solid';
+    src: url(./assets/fonts/PokemonSolid.ttf);
+    font-weight: normal;
+}
