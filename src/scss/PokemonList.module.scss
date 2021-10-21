@@ -1,7 +1,5 @@
 .wrap-pokemon-list {
-    background-color: #fff;
     margin-bottom: 100px;
-    border-radius: 4px;
     padding: 30px;
 }
 
@@ -13,4 +11,12 @@
         width: calc(100% * 1/5 - 20px);
         margin: 0 0 40px 20px;
     }
+}
+
+.refresh {
+    font-size: 16px;
+    padding: 8px 20px;
+    background-color: #ccc;
+    margin-top: 10px;
+    cursor: pointer;
 }

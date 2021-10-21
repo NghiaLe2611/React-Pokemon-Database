@@ -5,7 +5,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Signika', sans-serif;
     font-weight: 300;
-    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 code {
@@ -38,6 +37,11 @@ a {
     text-decoration: none;
 }
 
+button {
+    outline: none;
+    border: none;
+}
+
 table {
     width: 100%;
     margin: 0 auto 1rem;
@@ -46,6 +50,14 @@ table {
 }
 
 main {
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+    min-height: 90vh;
+    padding: 30px 0;
+}
+
+.content {
+    border-radius: 4px;
+    background-color: #fff;
     min-height: 100vh;
 }
 
@@ -53,4 +65,54 @@ main {
     font-family: 'Pokemon Solid';
     src: url(./assets/fonts/PokemonSolid.ttf);
     font-weight: normal;
+}
+
+.fade-enter {
+    opacity: 0;
+    z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+    opacity: 1;
+    transition: all .5s ease;
+}
+
+.wrap-transition {
+    overflow: hidden;
+}
+
+.wrapper {
+    transition: all .5s ease;
+}
+
+.left .slide-enter {
+    transform: translateX(100%);
+}
+
+.left .slide-enter-active {
+    transform: translateX(0%);
+}
+
+.left .slide-exit {
+    transform: translateX(-100%);
+}
+
+.left .slide-exit-active {
+    transform: translateX(-100%);
+}
+
+.right .slide-enter {
+    transform: translateX(-100%);
+}
+
+.right .slide-enter-active {
+    transform: translateX(0%);
+}
+
+.right .slide-exit {
+    transform: translateX(100%);
+}
+
+.right .slide-exit-active {
+    transform: translateX(100%);
 }

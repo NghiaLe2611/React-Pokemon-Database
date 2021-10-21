@@ -27,3 +27,21 @@ export const formatStatString = (str) => {
 
     return result;
 }
+
+export const convertPokemonId = (id) => {
+    let pokemonId = `00${id}`;
+
+    if (id.toString().length >= 2 && id.toString().length < 3) {
+        pokemonId = `0${id}`
+    }
+
+    if (id.toString().length >= 3) {
+        pokemonId = `${id}`
+    }
+
+    return pokemonId;
+}
+
+export const getLastStringSegment = (str) => {
+    return str.split('/').filter(Boolean).pop();
+}

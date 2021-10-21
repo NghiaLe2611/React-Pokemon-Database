@@ -1,30 +1,25 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import classes from '../scss/PokemonItem.module.scss';
-import { capitalizeFirstLetter } from '../helpers/helpers';
+import { capitalizeFirstLetter, convertPokemonId } from '../helpers/helpers';
 
 const PokemonItem = (props) => {
     const { id, name, types } = props.item;
-    let pokemonId = `00${id}`;
 
-    if (id.toString().length >= 2 && id.toString().length < 3) {
-        pokemonId = `0${id}`
-    }
-
-    if (id.toString().length >= 3) {
-        pokemonId = `${id}`
-    }
 
     return (
         <li className={classes.item}>
             <Fragment>
                 <figure>
-                    <Link to={`/pokemon/${id}`}>
-                        <img src={`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${pokemonId}.png`} alt={name} />
+                    <Link to={{
+                        pathname: `/pokemon/${id}`,
+                        state: { id: id }
+                    }}>
+                        <img src={`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${convertPokemonId(id)}.png`} alt={name} />
                     </Link>
                 </figure>
                 <div className={classes['pokemon-info']}>
-                    <p>#{pokemonId}</p>
+                    <p>#{convertPokemonId(id)}</p>
                     <h2>{capitalizeFirstLetter(name)}</h2>
                     <ul className={classes.types}>
                         {

@@ -3,10 +3,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    &.fixed-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%);
+    }
 }
 
 .loader {
-    border: 5px solid #c5c5c5;
+    border: 5px solid #dedede;
     -webkit-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
     border-top: 5px solid #3498db;
