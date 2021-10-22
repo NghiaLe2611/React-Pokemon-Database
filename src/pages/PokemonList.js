@@ -22,7 +22,7 @@ const PokemonList = () => {
 
     // Get all pokemon data
     const getPokemonData = () => {
-        console.log('Get pokemon list');
+        // console.log('Get pokemon list');
         fetchPokemons({
             url: `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
         }, (data) => {
@@ -68,7 +68,7 @@ const PokemonList = () => {
     }
 
     useEffect(() => {
-        console.log('getPokemonData');
+        // console.log('getPokemonData');
         getPokemonData();
     }, [offset]);
 
@@ -76,13 +76,12 @@ const PokemonList = () => {
     // Infinite scroll (auto fetch data when reached bottom)
     useEffect(() => {
         if (onScreen && pokemonList.length > 0 && !error) {
-            
             if (nextUrl !== null) {
                 setLoadMore(true);
                 const timer = setTimeout(() => {
                     // console.log('infinite loading...');
                     setOffset(prevOffset => prevOffset += limit);
-                }, 200);
+                }, 500);
 
                 return () => {
                     clearTimeout(timer);
@@ -109,7 +108,10 @@ const PokemonList = () => {
                 {
                     pokemonData.map((item) => (
                         <li key={item.name}>
-                            <SkeletonElement type="item"></SkeletonElement>
+                            <SkeletonElement type="img"></SkeletonElement>
+                            <SkeletonElement type="text"></SkeletonElement>
+                            <SkeletonElement type="heading"></SkeletonElement>
+                            <SkeletonElement type="types"></SkeletonElement>
                         </li>
                     ))
                 }

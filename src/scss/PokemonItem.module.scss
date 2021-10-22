@@ -7,6 +7,7 @@
         a {
             display: block;
             text-align: center;
+            // height: calc(100vw * 1/2 - 40px);
         }
     }
     .pokemon-info {
@@ -24,8 +25,8 @@
             display: flex;
             li {
                 line-height: 1;
-                max-width: 110px;
-                width: 30%;
+                max-width: 120px;
+                min-width: 30%;
                 text-align: center;
                 margin-right: 5px;
                 a {

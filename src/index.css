@@ -116,3 +116,9 @@ main {
 .right .slide-exit-active {
     transform: translateX(100%);
 }
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+}

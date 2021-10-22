@@ -1,25 +1,27 @@
 @import "colors";
 .title {
     font-weight: 500;
-    font-size: 45px;
-    margin-bottom: 80px;
+    font-size: 35px;
+    margin-bottom: 30px;
     width: 100%;
     text-align: center;
 }
 
 .heading {
     font-weight: 500;
-    font-size: 36px;
+    font-size: 28px;
+    text-align: center;
     margin-bottom: 30px;
 }
 
 .wrap-pokemon-detail {
     display: flex;
     flex-wrap: wrap;
-    padding: 50px;
+    padding: 20px 20px 30px 20px;
     margin: 0 auto 50px auto;
     >.img {
-        margin-right: 50px;
+        padding: 0px 50px;
+        margin-bottom: 20px;
     }
 }
 
@@ -40,8 +42,8 @@
     display: flex;
     li {
         line-height: 1;
-        max-width: 110px;
-        width: 30%;
+        max-width: 120px;
+        min-width: 30%;
         text-align: center;
         margin-right: 5px;
         a {
@@ -65,7 +67,7 @@
 }
 
 .table-stat {
-    width: 80%;
+    width: 100%;
     margin: 0;
     tr {
         border-bottom: 1px solid #f1f1f1;
@@ -83,6 +85,7 @@
 }
 
 .stat-bar {
+    width: 100%;
     div {
         height: .75rem;
         border-radius: 4px;
@@ -92,35 +95,34 @@
 }
 
 .wrap-evolution-chain {
+    width: 100%;
     margin-top: 50px;
 }
 
 .list-evolution {
-    display: flex;
-    flex-wrap: wrap;
     .evo-item {
         display: flex;
         flex-direction: column;
-        max-width: 150px;
+        max-width: 100px;
         text-align: center;
         position: relative;
+        margin: 0 auto;
         &:not(:last-child) {
-            margin-right: 100px;
+            margin-bottom: 70px;
             &:after {
                 content: "";
                 position: absolute;
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
                 border-top: 1px solid #333;
                 border-right: 1px solid #333;
-                border-width: 5px;
-                transform: rotate(45deg);
-                right: -60px;
-                top: 25%;
+                border-width: 3px;
+                transform: rotate(135deg) translateX(-50%);
+                right: 50%;
+                bottom: -45px;
             }
         }
         .img {
-            margin-bottom: 20px;
             height: 100px;
             img {
                 height: 100%;
@@ -131,6 +133,46 @@
         .name {
             font-size: 20px;
             font-weight: 500;
+        }
+    }
+}
+
+@media (min-width: 1024px) {
+    .title {
+        font-size: 45px;
+        margin-bottom: 80px;
+    }
+    .wrap-pokemon-detail {
+        padding: 50px;
+        >.img {
+            padding: 0;
+            margin: 0 50px 0 0;
+        }
+    }
+    .heading {
+        text-align: left;
+        font-size: 36px;
+    }
+    .table-stat {
+        width: 80%;
+    }
+    .list-evolution {
+        display: flex;
+        flex-wrap: wrap;
+        .evo-item {
+            max-width: 150px;
+            margin: initial;
+            &:not(:last-child) {
+                margin: 0 100px 0 0;
+                &:after {
+                    width: 25px;
+                    height: 25px;
+                    border-width: 4px;
+                    transform: rotate(45deg);
+                    right: -60px;
+                    top: 25%;
+                }
+            }
         }
     }
 }
