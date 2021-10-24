@@ -1,5 +1,10 @@
-export const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const getLinkSuggestion = (str) => {
+    const normalizeStr = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return normalizeStr.toLowerCase().replace(/\s/g, "-");
 }
 
 export const convertPokemonInfo = (type, value) => {

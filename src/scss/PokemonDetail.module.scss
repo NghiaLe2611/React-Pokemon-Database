@@ -137,6 +137,16 @@
     }
 }
 
+.home {
+    margin: 30px auto;
+    display: table;
+    padding: 8px 20px;
+    border-radius: 4px;
+    background-color: #404079;
+    font-size: 18px;
+    color: #fff
+}
+
 @media (min-width: 1024px) {
     .title {
         font-size: 45px;

@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import classes from '../scss/PokemonDetail.module.scss';
 import LoadingIndicator from '../components/UI/LoadingIndicator';
 import { capitalizeFirstLetter, convertPokemonInfo, formatStatString, convertPokemonId } from '../helpers/helpers';
 import styled, { keyframes, css } from 'styled-components';
 import useFetch from '../hooks/useFetch';
+import NotFound from '../components/NotFound';
 
 const BASE_MAX_STAT = 180;
 
@@ -194,14 +195,19 @@ const PokemonDetail = () => {
         )
     }
 
-    if (error) {
-        content = <p>{error}</p>
-    }
+    
 
     return (
-       <div className={`${classes['wrap-pokemon-detail']} content`}>
-           {content}
-       </div>
+        !error ? (
+            <div className={`${classes['wrap-pokemon-detail']} content`}>
+                {content}
+            </div>
+        ) : 
+        <NotFound>
+            <p>
+                <a href="/pokedex" className={classes.home}>Go to homepage</a>
+            </p>
+        </NotFound>
     )
 };
 
