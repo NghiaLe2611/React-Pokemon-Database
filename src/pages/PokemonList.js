@@ -32,14 +32,15 @@ const PokemonList = () => {
         const initialValue = JSON.parse(savedData);
         return initialValue || [];
     });
+    
     const [loadMore, setLoadMore] = useState(false);
     const [filteredListPokemon, setFilteredListPokemon] = useState([]);
 
     const loader = useRef();
-    const onScreen = useOnScreen(loader, "-40px");
+
+    const onScreen = useOnScreen(loader, "50px");
 
     const { isLoading, error, fetchData: fetchPokemons } = useFetch();
-
 
     // Get all pokemon data
     const getPokemonData = () => {
@@ -125,6 +126,7 @@ const PokemonList = () => {
         if (onScreen && pokemonList.length > 0 && !error) {
             if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length <= 0)) {
                 setLoadMore(true);
+
                 const timer = setTimeout(() => {
                     // console.log('infinite loading...');
                     setOffset(prevOffset => prevOffset += limit);
@@ -132,13 +134,17 @@ const PokemonList = () => {
 
                 return () => {
                     clearTimeout(timer);
-                    setLoadMore(false);
                 };
             } else {
                 alert('No more data');
             } 
         }
-    }, [onScreen]);
+
+        return () => {
+            setLoadMore(false);
+        };
+
+    }, [onScreen]); // error, filteredListPokemon, pokemonList.length, nextUrl
 
     const loadMorePokemon = () => {
         // console.log('load more');
@@ -214,12 +220,14 @@ const PokemonList = () => {
                 ) : (
                     <Fragment>
                         {content}
-                        {loadMore && <LoadingIndicator/>}
+                        {loadMore && <div style={{marginTop: '-30px'}}><LoadingIndicator/></div>}
                     </Fragment>
                 )
                 
             }
-            <div ref={loader} className="end" style={{display: error && pokemonList.length ? 'none' : 'block'}}></div>
+            <div ref={loader} className="end" style={{
+                display: error && pokemonList.length ? 'none' : 'block'}}>
+            </div>
         </div>
     )
 };
