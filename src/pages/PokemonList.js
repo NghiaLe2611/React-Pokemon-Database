@@ -124,7 +124,7 @@ const PokemonList = () => {
     // Infinite scroll (auto fetch data when reached bottom)
     useEffect(() => {
         if (onScreen && pokemonList.length > 0 && !error) {
-            if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length <= 0)) {
+            if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length >= 0)) {
                 setLoadMore(true);
 
                 const timer = setTimeout(() => {
@@ -225,7 +225,6 @@ const PokemonList = () => {
                         {loadMore && <div style={{marginTop: '-30px'}}><LoadingIndicator/></div>}
                     </Fragment>
                 )
-                
             }
             <div ref={loader} className='end' style={{
                 display: error && pokemonList.length ? 'none' : 'block'}}>
