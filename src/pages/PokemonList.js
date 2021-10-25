@@ -32,9 +32,9 @@ const PokemonList = () => {
         const initialValue = JSON.parse(savedData);
         return initialValue || [];
     });
-    
+
     const [loadMore, setLoadMore] = useState(false);
-    const [filteredListPokemon, setFilteredListPokemon] = useState([]);
+    const [filteredListPokemon, setFilteredListPokemon] = useState(null);
 
     const loader = useRef();
 
@@ -204,9 +204,11 @@ const PokemonList = () => {
     let filteredListContent = (
         <ul className={classes['list']}>
             {
-                filteredListPokemon.map(name => (
-                    <PokemonItem key={name} item={name} type='filtered'></PokemonItem>
-                ))
+                filteredListPokemon && (
+                    filteredListPokemon.map(name => (
+                        <PokemonItem key={name} item={name} type='filtered'></PokemonItem>
+                    ))
+                )
             }
         </ul>
     );
@@ -215,8 +217,8 @@ const PokemonList = () => {
         <div className={`${classes['wrap-pokemon-list']} content`}>
             <SearchPokemon searchHandler={getFilteredListPokemon}/>
             {
-                filteredListPokemon.length > 0 ? (
-                    filteredListContent
+                filteredListPokemon ? (
+                    filteredListPokemon.length > 0 ? filteredListContent : <p>No results match</p>
                 ) : (
                     <Fragment>
                         {content}
@@ -225,7 +227,7 @@ const PokemonList = () => {
                 )
                 
             }
-            <div ref={loader} className="end" style={{
+            <div ref={loader} className='end' style={{
                 display: error && pokemonList.length ? 'none' : 'block'}}>
             </div>
         </div>

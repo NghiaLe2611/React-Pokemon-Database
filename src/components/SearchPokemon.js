@@ -42,14 +42,8 @@ const SearchPokemon = (props) => {
                 const results = pokemonSearchData.filter(name => name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1);
                 const suggestions = results.slice(0, 5);
 
-                console.log(results, suggestions);
-                if (searchKey) {
-                    setSearchList(data => results);
-                    setSuggestions(data => suggestions);
-                } else {
-                    setSearchList(data => []);
-                    setSuggestions(data => []);
-                }
+                setSearchList(data => results.length ? results : []);
+                setSuggestions(data => suggestions);
             }
         }, 1000);
 
@@ -74,7 +68,11 @@ const SearchPokemon = (props) => {
     const submitSearch = (e) => {
         e.preventDefault();
         setShowList(false);
-        props.searchHandler(searchList);
+        if (searchKey) {
+            props.searchHandler(searchList);
+        } else {
+            props.searchHandler(null);
+        }
     }
 
     return (
@@ -85,13 +83,17 @@ const SearchPokemon = (props) => {
                         onMouseDown={getPokemonSearchData}
                         onChange={searchPokemonHandler}
                     />
-                    <ul className={classes.suggestions} style={{display: suggestions.length > 0 && showList ? 'block' : 'none'}}>
-                        {
-                            suggestions.length > 0 && suggestions.map(name => (
-                                <li key={name}><a href={`/pokemon/${getLinkSuggestion(name)}`}>{capitalizeFirstLetter(name)}</a></li>
-                            ))
-                        }
-                    </ul>
+                    {
+                        suggestions && (
+                            <ul className={classes.suggestions} style={{display: searchKey && suggestions.length > 0 && showList ? 'block' : 'none'}}>
+                                {
+                                    suggestions.length > 0 && suggestions.map(name => (
+                                        <li key={name}><a href={`/pokemon/${getLinkSuggestion(name)}`}>{capitalizeFirstLetter(name)}</a></li>
+                                    ))
+                                }
+                            </ul>
+                        )
+                    }
                 </div>
                 <button><img src={iconSearch} alt="search" /></button>
             </form>
