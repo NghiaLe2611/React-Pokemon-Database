@@ -1,10 +1,14 @@
 import Layout from './components/UI/Layout';
-import PokemonList from './pages/PokemonList';
+import PokemonMainPage from './pages/PokemonList';
 import PokemonDetail from './pages/PokemonDetail';
 import PokemonType from './pages/PokemonType';
-import NotFound from './components/NotFound';
+import NotFound from './pages/NotFound';
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import PokemonList from './components/List/PokemonList';
+import PokemonTableList from './components/Table/PokemonTableList';
+
+
 // import { useState, useEffect } from 'react';
 
 // function getPathDepth(location) {
@@ -15,6 +19,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 function App() {
     const location = useLocation();
+
     // const [pageDirection, setPageDirection] = useState('');
     // const [currentPath, setCurrentPath] = useState(location.pathname)
 
@@ -44,22 +49,28 @@ function App() {
                     unmountOnExit={true}
                 >
                     <Switch location={location}>
-                            <Route path="/" exact>
-                                <Redirect to="/pokedex" />
-                            </Route>
-                            <Route path="/pokedex" exact>
-                                <PokemonList />
-                            </Route>
-                            <Route path="/pokemon/:pokemonId" exact>
-                                <PokemonDetail />
-                            </Route>
-                            <Route path="/pokemon/type/:pokemonType">
-                                <PokemonType/> 
-                            </Route>
-                            <Route path="*">
-                                <NotFound type={query.get("type")}/>
-                            </Route>
-                        </Switch>
+                        <Route path="/" exact>
+                            <Redirect to="/pokedex" />
+                        </Route>
+                        <Route path="/pokedex" exact>
+                            <PokemonMainPage/>
+                        </Route>
+                        <Route path="/list" exact>
+                            <PokemonList/>
+                        </Route>
+                        <Route path="/table" exact>
+                            <PokemonTableList/>
+                        </Route>
+                        <Route path="/pokemon/:pokemonId" exact>
+                            <PokemonDetail/>
+                        </Route>
+                        <Route path="/pokemon/type/:pokemonType">
+                            <PokemonType/> 
+                        </Route>
+                        <Route path="*">
+                            <NotFound type={query.get("type")}/>
+                        </Route>
+                    </Switch>
                 </CSSTransition>
             </TransitionGroup>
         </Layout>        

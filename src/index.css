@@ -38,6 +38,7 @@ a {
 }
 
 button,
+select,
 input {
     outline: none;
     border: none;

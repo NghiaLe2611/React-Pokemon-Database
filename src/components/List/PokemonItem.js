@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import classes from '../scss/PokemonItem.module.scss';
-import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../helpers/helpers';
+import classes from '../../scss/PokemonItem.module.scss';
+import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../../helpers/helpers';
 
 const PokemonItem = (props) => {
     const { id, name, types } = props.item;

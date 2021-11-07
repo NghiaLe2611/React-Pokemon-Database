@@ -1,0 +1,37 @@
+@import "colors";
+.types {
+    li {
+        margin: 2px 0;
+        a {
+            display: inline-block;
+            width: 66px;
+            padding: 3px;
+            font-size: 13px;
+            border: 1px solid rgba(0, 0, 0, .2);
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.cell-name {
+    width: 170px;
+    a {
+        font-weight: 500;
+        color: #2769be;
+        &:hover {
+            color: #a42121;
+            text-decoration: underline;
+        }
+    }
+}
+
+.img {
+    width: 60px;
+    margin-right: 5px;
+}

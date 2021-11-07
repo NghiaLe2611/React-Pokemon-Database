@@ -1,11 +1,11 @@
 import { useState, useEffect, Fragment } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import classes from '../scss/PokemonDetail.module.scss';
 import LoadingIndicator from '../components/UI/LoadingIndicator';
 import { capitalizeFirstLetter, convertPokemonInfo, formatStatString, convertPokemonId } from '../helpers/helpers';
 import styled, { keyframes, css } from 'styled-components';
 import useFetch from '../hooks/useFetch';
-import NotFound from '../components/NotFound';
+import NotFound from './NotFound';
+import classes from '../scss/PokemonDetail.module.scss';
 
 const BASE_MAX_STAT = 180;
 

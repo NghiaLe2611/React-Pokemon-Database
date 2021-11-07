@@ -1,236 +1,355 @@
-import axios from 'axios';
-import { useState, useEffect, useRef, Fragment } from 'react';
-import useOnScreen from '../hooks/useOnScreen';
-import classes from '../scss/PokemonList.module.scss'
-import PokemonItem from '../components/PokemonItem';
+import { useState, useEffect, useMemo, useCallback, useReducer, Fragment } from 'react';
 import LoadingIndicator from '../components/UI/LoadingIndicator';
-import SkeletonElement from '../components/UI/SkeletonElement';
-import useFetch from '../hooks/useFetch';
-import SearchPokemon from '../components/SearchPokemon';
+import PokemonItem from '../components/List/PokemonItem';
+import PokemonTableItem from '../components/Table/PokemonTableItem';
+import { pokemonReducer } from '../store/reducers/pokemonReducer';
+import classes from '../scss/PokemonMain.module.scss';
+import { capitalizeFirstLetter } from '../helpers/helpers';
 
-const limit = 20;
+const typeArr = [
+    'normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 
+    'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'steel', 'fairy'
+];
 
-const PokemonList = () => {
-    const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList'));
-
-    // const [offset, setOffset] = useState(0);
-    const [offset, setOffset] = useState(() => {
-        const savedOffset = parseInt(localStorage.getItem('offset'));
-        return savedOffset || 0;
+const PokemonMainPage = () => {
+    const [state, dispatchState] = useReducer(pokemonReducer, {
+        data: JSON.parse(localStorage.getItem('pokemonTableData')) || [],
+        isLoading: false,
+        error: null,
+        nextUrl: localStorage.getItem('nextUrl') || 'https://pokeapi.co/api/v2/pokemon?limit=20',
+        sortName: 'id',
+        sortType: 'asc'
     });
+    const [filterType, setFilterType] = useState("");
+    const [isFiltering, setIsFiltering] = useState(false);
+    const [searchKey, setSearchKey] = useState('');
 
-    // const [nextUrl, setNextUrl] = useState(null);
-    const [nextUrl, setNextUrl] = useState(() => {
-        const savedNextUrl = localStorage.getItem('nextUrl');
-        return savedNextUrl || null;
-    });
+    let sortedPokemonList = useMemo(() => {
+		let sortableItems = [...state.data];
 
-    const [pokemonData, setPokemonData] = useState([]);
-    // const [pokemonList, setPokemonList] = useState([]);
-    const [pokemonList, setPokemonList] = useState(() => {
-        const savedData = localStorage.getItem('pokemonList');
-        const initialValue = JSON.parse(savedData);
-        return initialValue || [];
-    });
+        const type = state.sortType;
+        const key = state.sortName;
 
-    const [loadMore, setLoadMore] = useState(false);
-    const [filteredListPokemon, setFilteredListPokemon] = useState(null);
+        const statArr = ['hp', 'attack', 'defense', 'sp-attack', 'sp-defense', 'speed'];
+        const indexStat = statArr.indexOf(key);
 
-    const loader = useRef();
+		sortableItems.sort((a, b) => {
 
-    const onScreen = useOnScreen(loader, "50px");
-
-    const { isLoading, error, fetchData: fetchPokemons } = useFetch();
-
-    // Get all pokemon data
-    const getPokemonData = () => {
-        // console.log('Get pokemon list');
-
-        fetchPokemons({
-            url: `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
-        }, (data) => {
-            if (data) {
-                setPokemonData(state => data.results);
-                setNextUrl(state => data.next);
-            
-                if (pokemonListStorage != null && !onScreen) return;
-
-                const promises = [];
-                const pokemonArray = [];
-                
-                // Get + extract detail for pokemon item
-                for (let i = offset + 1; i <= offset + limit; i++) {
-                    promises.push(
-                        axios('https://pokeapi.co/api/v2/pokemon/' + i)
-                    );
+            if (indexStat >= 0) {
+                if (a.stats[indexStat].base_stat < b.stats[indexStat].base_stat) {
+                    return type === 'asc' ? -1 : 1;
                 }
-                Promise.all(promises)
-                    .then((results) => {
-                        // console.log('Get pokemon details');
-                        results.forEach((res) => {
-                            const info = res.data;
-                            const types = info.types.map((item) => item.type.name);
-        
-                            const pokemon = {
-                                id: info.id,
-                                name: info.name,
-                                types,
-                                weight: info.weight,
-                                height: info.height
-                            };
-        
-                            pokemonArray.push(pokemon);
-                        });
-        
-                        setPokemonList(arr => arr.concat(pokemonArray));
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });   
-            }
-        });
-    }
-
-    useEffect(() => {
-        // console.log('getPokemonData');
-        getPokemonData();
-        localStorage.setItem('offset', offset);
-    }, [offset]);
-
-    useEffect(() => {
-        localStorage.setItem('pokemonList', JSON.stringify(pokemonList));
-    }, [pokemonList]);
-
-    useEffect(() => {
-        localStorage.setItem('nextUrl', nextUrl);
-    }, [nextUrl]);
     
-    // Clear localStorage when exit tab
-    useEffect(() => {
-        // window.addEventListener('beforeunload', handleTabClosing)
-        window.addEventListener('unload', handleTabClosing)
-        return () => {
-            // window.removeEventListener('beforeunload', handleTabClosing)
-            window.removeEventListener('unload', handleTabClosing)
-        }
-    });
-    
-    const handleTabClosing = () => {
-        localStorage.removeItem('pokemonList');
-        localStorage.removeItem('offset');
-        localStorage.removeItem('nextUrl');
-    }
-
-    // Infinite scroll (auto fetch data when reached bottom)
-    useEffect(() => {
-        if (onScreen && pokemonList.length > 0 && !error) {
-            if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length >= 0)) {
-                setLoadMore(true);
-
-                const timer = setTimeout(() => {
-                    // console.log('infinite loading...');
-                    setOffset(prevOffset => prevOffset += limit);
-                }, 500);
-
-                return () => {
-                    clearTimeout(timer);
-                };
+                if (a.stats[indexStat].base_stat > b.stats[indexStat].base_stat) {
+                    return type === 'asc' ? 1 : -1;
+                }
             } else {
-                alert('No more data');
-            } 
+                if (key === 'total') {
+                    const totalA = a.stats.reduce((n, { base_stat }) => n + base_stat, 0);
+                    const totalB = b.stats.reduce((n, { base_stat }) => n + base_stat, 0);
+
+                    if (totalA < totalB) {
+                        return type === 'asc' ? -1 : 1;
+                    }
+        
+                    if (totalA > totalB) {
+                        return type === 'asc' ? 1 : -1;
+                    }
+                } else {
+                    if (a[key] < b[key]) {
+                        return type === 'asc' ? -1 : 1;
+                    }
+        
+                    if (a[key] > b[key]) {
+                        return type === 'asc' ? 1 : -1;
+                    }
+                }
+            }
+
+            return 0;
+
+		});
+
+        if (type === '') {
+            sortableItems = [...state.data];
         }
 
-        return () => {
-            setLoadMore(false);
+        if (filterType.length) {
+            sortableItems = sortableItems.filter(item => item.types.includes(filterType) === true);
+        } else {
+            sortableItems = sortableItems.filter(item => item.name);
+        }
+
+        if (searchKey.length) {
+            sortableItems = sortableItems.filter(item => item.name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1);
+        }
+
+		return sortableItems;
+	}, [state.data, state.sortName, state.sortType, filterType, searchKey]);
+
+    const [view, setView] = useState('LIST');
+    
+    const getAllPokemons = async (url) => {
+
+        const fetchData = async () => {
+            const response = await fetch(
+                url, {
+                    method: 'GET',
+                }
+            );
+
+            dispatchState({ type: 'FETCH_INIT' });
+
+            if (!response.ok) {
+                throw new Error('Could not fetch data!');
+            }
+
+            const data = await response.json();
+            return data;
         };
 
-    }, [onScreen]); // error, filteredListPokemon, pokemonList.length, nextUrl
+        try {
+            const data = await fetchData();
+            let pokemonList = [];
 
-    const loadMorePokemon = () => {
-        // console.log('load more');
-        getPokemonData();
-    }
+            if (data) {
+                async function createPokemonObject(results) {
+                    for (const pokemon of results) {
+                        const res = await fetch(
+                            `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
+                        );
+                        const detail = await res.json();
+                        const types = detail.types.map((item) => item.type.name);
 
-    const getFilteredListPokemon = (data) => {
-        // console.log(data);
-        setTimeout(() => {
-            setFilteredListPokemon(data);
-        }, 500);
-    };
+                        const pokemonInfo = {
+                            id: detail.id,
+                            name: detail.name,
+                            stats: detail.stats,
+                            types: types,
+                            image: detail.sprites.front_default
+                        }
+                        pokemonList = [...pokemonList, pokemonInfo];
+                    }
 
-    let content = <div style={{minHeight: '80vh'}}>{isLoading && <LoadingIndicator type='fixed'/>}</div>;
-
-    if (pokemonData.length) {
-        content = (
-            <ul className={classes['list']}>
-                {
-                    pokemonData.map((item) => (
-                        <li key={item.name}>
-                            <SkeletonElement type="img"></SkeletonElement>
-                            <SkeletonElement type="text"></SkeletonElement>
-                            <SkeletonElement type="heading"></SkeletonElement>
-                            <SkeletonElement type="types"></SkeletonElement>
-                        </li>
-                    ))
+                    dispatchState({ 
+                        type: 'FETCH_SUCCESS',
+                        payload: {
+                            list: pokemonList, 
+                            nextUrl: data.next
+                        }
+                    });
                 }
-            </ul>
-        )
+
+                createPokemonObject(data.results);
+
+            }
+        } catch (err) {
+            dispatchState({ 
+                type: 'FETCH_FAILURE',
+                error: err.message
+            });
+        }
+	};
+
+    useEffect(() => {
+        const pokemonDataStorage = JSON.parse(localStorage.getItem('pokemonTableData')) || [];
+        if (pokemonDataStorage.length <= 0) {
+            console.log('Get all pokemons');
+            getAllPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
+        } else {
+            console.log('Get pokemonData localStorage')
+        }
+    }, []);   
+
+    useEffect(() => {
+        localStorage.setItem('pokemonTableData', JSON.stringify(state.data));
+        localStorage.setItem('nextUrl', state.nextUrl);
+    }, [state]);
+
+    const retryFetchData = () => {
+        // console.log('Retry data');
+        if (state.data.length > 0) {
+            getAllPokemons(state.nextUrl);
+        } else {
+            getAllPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
+        }
     }
-   
-    if (pokemonList.length) {
+
+    const loadMoreHandler = () => {
+        // console.log('LOAD MORE', nextUrl);
+        getAllPokemons(state.nextUrl);
+    }
+
+    const sortHandler = (filterName) => {
+        setIsFiltering(true); 
+        
+        setTimeout(() => {
+            dispatchState({ 
+                type: 'SORT_DATA',
+                name: filterName
+            });
+
+            setIsFiltering(false); 
+        }, 500);
+        
+    }
+
+    const onSearchHandler = (e) => {
+        setTimeout(() => {
+            setSearchKey(e.target.value);
+        }, 500);
+    }
+
+    const changeViewHandler = (viewType)  => {
+        setIsFiltering(true); 
+        
+        setTimeout(() => {
+            setView(viewType);
+            setIsFiltering(false); 
+        }, 500);
+    }
+
+    const filterTypeHandler = (e) => {
+        // console.log(e.target.value);
+        setIsFiltering(true); 
+        
+        setTimeout(() => {
+            setFilterType(e.target.value);
+            setIsFiltering(false); 
+        }, 500);
+    }
+
+    const getClassName = useCallback((filterName) => {
+        if (filterName === state.sortName) {
+            if (state.sortType === 'asc') {
+                return classes.asc;
+            }
+            else if (state.sortType === 'desc') {
+                return classes.desc;
+            }
+        }
+
+        return;
+    }, [state.sortName, state.sortType]);
+
+    let content = state.isLoading && <LoadingIndicator/>;
+
+    if (state.error && state.data.length <= 0) {
         content = (
             <Fragment>
-                <ul className={classes['list']}>
-                    {
-                        pokemonList.map((item) => {
-                            return <PokemonItem key={item.id} item={item}></PokemonItem>
-                        })
-                    }
-                </ul>
-    
-                {error &&  (
-                    <p style={{textAlign: 'center'}}>You appear to be offline. Please check your network connection.<br/>
-                        <button className={classes.refresh} onClick={loadMorePokemon}>Retry</button>
-                    </p>
-                )}
+                <p style={{backgroundColor: 'white', padding: '10px 20px'}}>{state.error}</p>
+                <button className={classes.button} onClick={retryFetchData}>Retry</button>
             </Fragment>
         );
     }
 
-    if (error && !pokemonData.length) {
-        content = <p>{error}</p>;
+    if (state.data.length > 0) {
+        if (view === 'LIST') {
+            content = (
+                <Fragment>
+                    <ul className={classes['list']}>
+                        {
+                            sortedPokemonList.length > 0 ? (
+                                sortedPokemonList.map((item) => {
+                                    return <PokemonItem key={item.id} item={item}></PokemonItem>
+                                })
+                            ) : (
+                                <p style={{marginLeft: 30}}>No result found. Please try again.</p>
+                            )
+                        }
+                    </ul>
+                    <button className={classes.button} onClick={loadMoreHandler}>Load more</button>
+                </Fragment>
+            );
+        } else if (view === 'TABLE') {
+            content = (
+                <Fragment>
+                    <table id='pokedex' className={classes['pokemon-table']}>
+                        <thead>
+                            <tr>
+                                <th className={`${classes.sorting} ${getClassName('id')}`}
+                                    onClick={() => sortHandler('id')}
+                                >#</th>
+                                <th className={`${classes.sorting} ${getClassName('name')}`}
+                                    onClick={() => sortHandler('name')}
+                                >Name</th>
+                                <th>Type</th>
+                                <th className={`${classes.sorting} ${getClassName('total')}`}
+                                    onClick={() => sortHandler('total')}
+                                >Total</th>
+                                <th className={`${classes.sorting} ${getClassName('hp')}`}
+                                    onClick={() => sortHandler('hp')}
+                                >HP</th>
+                                <th className={`${classes.sorting} ${getClassName('attack')}`}
+                                    onClick={() => sortHandler('attack')}
+                                >Attack</th>
+                                <th className={`${classes.sorting} ${getClassName('defense')}`}
+                                    onClick={() => sortHandler('defense')}
+                                >Defense</th>
+                                <th className={`${classes.sorting} ${getClassName('sp-attack')}`}
+                                    onClick={() => sortHandler('sp-attack')}
+                                >Sp. Atk</th>
+                                <th className={`${classes.sorting} ${getClassName('sp-defense')}`}
+                                    onClick={() => sortHandler('sp-defense')}
+                                >Sp. Def</th>
+                                <th className={`${classes.sorting} ${getClassName('speed')}`}
+                                    onClick={() => sortHandler('speed')}
+                                >Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                sortedPokemonList.length > 0 && (
+                                    sortedPokemonList.map((item) => (
+                                        <tr key={item.id}>
+                                            <PokemonTableItem
+                                                name={item.name}
+                                                id={item.id}
+                                                types={item.types}
+                                                stats={item.stats}
+                                                image={item.image}
+                                            />
+                                        </tr>
+                                    ))
+                                )
+                            }
+                        </tbody>
+                    </table>
+                    { sortedPokemonList.length <= 0 && <p style={{marginLeft: 30}}>No result found. Please try again.</p> }
+                    <button className={classes.button} onClick={loadMoreHandler}>Load more</button>
+                </Fragment>
+            );
+        }
     }
 
-    let filteredListContent = (
-        <ul className={classes['list']}>
-            {
-                filteredListPokemon && (
-                    filteredListPokemon.map(name => (
-                        <PokemonItem key={name} item={name} type='filtered'></PokemonItem>
-                    ))
-                )
-            }
-        </ul>
-    );
-
-    return (
-        <div className={`${classes['wrap-pokemon-list']} content`}>
-            <SearchPokemon searchHandler={getFilteredListPokemon}/>
-            {
-                filteredListPokemon ? (
-                    filteredListPokemon.length > 0 ? filteredListContent : <p>No results match</p>
-                ) : (
-                    <Fragment>
-                        {content}
-                        {loadMore && <div style={{marginTop: '-30px'}}><LoadingIndicator/></div>}
-                    </Fragment>
-                )
-            }
-            <div ref={loader} className='end' style={{
-                display: error && pokemonList.length ? 'none' : 'block'}}>
+	return (
+        <Fragment>
+            <div className={`${classes['wrap-pokemon-list']} content ${isFiltering ? classes.filtering : ''}`}>
+                <div className={classes['wrap-filter']}>
+                    <div className={classes.filter}>
+                        <div className={classes.search}>
+                            <span>Name:</span><input type="text" className={classes.input} onChange={onSearchHandler}/>
+                        </div>
+                        <span>Type:</span> 
+                        <select className={classes.input} onChange={filterTypeHandler}>              
+                            <option value=''>-All-</option>
+                            {
+                                typeArr.map(type => (
+                                    <option key={type} value={type}>{capitalizeFirstLetter(type)}</option>
+                                ))
+                            }
+                        </select>
+                    </div>
+                    <div className={classes['wrap-btn']}>
+                        <button onClick={() => changeViewHandler('LIST')} title="View list" className={`${classes.first} ${view === 'LIST' ? classes.active : ''}`}></button>
+                        <button onClick={() => changeViewHandler('TABLE')} title="View table" className={`${classes.second} ${view === 'TABLE' ? classes.active : ''}`}></button>
+                    </div>
+                </div>
+                {content}
+                {state.data.length > 0 && state.isLoading && <LoadingIndicator/>} 
             </div>
-        </div>
-    )
+        </Fragment>
+    );
 };
 
-export default PokemonList;
+export default PokemonMainPage;

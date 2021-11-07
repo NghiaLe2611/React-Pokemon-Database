@@ -1,0 +1,85 @@
+.wrap-filter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    button {
+        cursor: pointer;
+        padding: 16px;
+        margin: 0 5px;
+        border-radius: 4px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #f1f1f1;
+        position: relative;
+        img {
+            width: 20px;
+        }
+        &:hover {
+            background-color: #e5e5e5;
+        }
+        &.active {
+            background-color: #fbbb2e;
+            img {
+                fill: #fff;
+            }
+            &:after {
+                background-color: #fff;
+            }
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            background-color: #000;
+        }
+        &.first {
+            &:after {
+                mask: url(../assets/images/icon-list.svg) no-repeat center / contain;
+                -webkit-mask: url(../assets/images/icon-list.svg) no-repeat center / contain;
+            }
+        }
+        &.second {
+            &:after {
+                mask: url(../assets/images/icon-table.svg) no-repeat center / contain;
+                -webkit-mask: url(../assets/images/icon-table.svg) no-repeat center / contain;
+            }
+        }
+    }
+    .filter {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        span {
+            font-size: 16px;
+            margin-right: 15px;
+        }
+        .input {
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        .search {
+            margin: 0 30px;
+            input {
+                width: 250px;
+                padding: 0.75rem;
+            }
+        }
+        select {
+            min-width: 100px;
+            margin-right: 20px;
+            padding: 0.5rem 0.75rem;
+        }
+    }
+    .wrap-btn {
+        margin-left: auto;
+    }
+}
+
+@import "./PokemonList";
+@import "./PokemonTable";
