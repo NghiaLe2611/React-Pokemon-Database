@@ -1,5 +1,7 @@
 .wrap-filter {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
     margin-bottom: 20px;
     button {
@@ -52,32 +54,85 @@
     }
     .filter {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         margin-left: auto;
-        span {
-            font-size: 16px;
-            margin-right: 15px;
-        }
         .input {
             border: 1px solid #dbdbdb;
             border-radius: 4px;
             font-size: 15px;
+            &:focus {
+                border-color: #fcbb2e;
+            }
         }
-        .search {
-            margin: 0 30px;
+        .wrap-ip {
+            margin-bottom: 10px;
+            span {
+                display: inline-block;
+                font-size: 16px;
+                margin-right: 15px;
+                width: 50px;
+            }
             input {
                 width: 250px;
                 padding: 0.75rem;
             }
-        }
-        select {
-            min-width: 100px;
-            margin-right: 20px;
-            padding: 0.5rem 0.75rem;
+            select {
+                min-width: 100px;
+                margin-right: 20px;
+                padding: 0.5rem 0.75rem;
+                &:focus {
+                    border-color: #fcbb2e;
+                }
+            }
         }
     }
     .wrap-btn {
         margin-left: auto;
+    }
+}
+
+@media (max-width: 1024px) {
+    .table-container {
+        overflow: auto;
+        width: 100%;
+        .pokemon-table {
+            width: 960px;
+            thead tr th {
+                min-width: 100px;
+                &:nth-child(2) {
+                    min-width: 140px;
+                }
+            }
+            th {
+                font-size: 15px;
+                padding: 10px 5px;
+            }
+            td {
+                font-size: 14px;
+                padding: 2px 5px;
+            }
+        }
+        &::-webkit-scrollbar {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            height: 7px
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background-color: rgba(169, 169, 169, .5);
+            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5)
+        }
+    }
+}
+
+@media (min-width: 1024px) {
+    .wrap-filter {
+        margin-bottom: 40px;
+        .filter .wrap-ip {
+            margin: 0 40px 0 0;
+        }
     }
 }
 

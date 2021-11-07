@@ -11,8 +11,8 @@ import classes from '../../scss/PokemonList.module.scss'
 const limit = 20;
 
 const PokemonList = () => {
-    const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList'));
-    
+    const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList')) || [];
+
     // const [offset, setOffset] = useState(0);
     const [offset, setOffset] = useState(() => {
         const savedOffset = parseInt(localStorage.getItem('offset'));
@@ -45,7 +45,6 @@ const PokemonList = () => {
     // Get all pokemon data
     const getPokemonData = () => {
         // console.log('Get pokemon list');
-
         fetchPokemons({
             url: `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
         }, (data) => {
@@ -53,11 +52,11 @@ const PokemonList = () => {
                 setPokemonData(state => data.results);
                 setNextUrl(state => data.next);
             
-                if (pokemonListStorage != null && !onScreen) return;
-
                 const promises = [];
                 const pokemonArray = [];
                 
+                if (pokemonListStorage.length > 0 && !onScreen) return;
+
                 // Get + extract detail for pokemon item
                 for (let i = offset + 1; i <= offset + limit; i++) {
                     promises.push(
@@ -106,6 +105,7 @@ const PokemonList = () => {
     }, [nextUrl]);
     
     // Clear localStorage when exit tab
+    /*
     useEffect(() => {
         // window.addEventListener('beforeunload', handleTabClosing)
         window.addEventListener('unload', handleTabClosing)
@@ -120,6 +120,7 @@ const PokemonList = () => {
         localStorage.removeItem('offset');
         localStorage.removeItem('nextUrl');
     }
+    */
 
     // Infinite scroll (auto fetch data when reached bottom)
     useEffect(() => {

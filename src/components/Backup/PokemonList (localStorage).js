@@ -1,16 +1,17 @@
 import axios from 'axios';
 import { useState, useEffect, useRef, Fragment } from 'react';
-import useOnScreen from '../hooks/useOnScreen';
-import classes from '../scss/PokemonList.module.scss'
-import PokemonItem from '../components/PokemonItem';
-import LoadingIndicator from '../components/UI/LoadingIndicator';
-import SkeletonElement from '../components/UI/SkeletonElement';
-import useFetch from '../hooks/useFetch';
+import useOnScreen from '../../hooks/useOnScreen';
+import PokemonItem from './PokemonItem';
+import LoadingIndicator from '../UI/LoadingIndicator';
+import SkeletonElement from '../UI/SkeletonElement';
+import useFetch from '../../hooks/useFetch';
+import SearchPokemon from '../SearchPokemon';
+import classes from '../../scss/PokemonList.module.scss'
 
 const limit = 20;
 
 const PokemonList = () => {
-    const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList'));
+    const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList')) || [];
 
     // const [offset, setOffset] = useState(0);
     const [offset, setOffset] = useState(() => {
@@ -31,18 +32,19 @@ const PokemonList = () => {
         const initialValue = JSON.parse(savedData);
         return initialValue || [];
     });
+
     const [loadMore, setLoadMore] = useState(false);
+    const [filteredListPokemon, setFilteredListPokemon] = useState(null);
 
     const loader = useRef();
-    const onScreen = useOnScreen(loader, "-40px");
+
+    const onScreen = useOnScreen(loader, "50px");
 
     const { isLoading, error, fetchData: fetchPokemons } = useFetch();
-
 
     // Get all pokemon data
     const getPokemonData = () => {
         // console.log('Get pokemon list');
-
         fetchPokemons({
             url: `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
         }, (data) => {
@@ -50,11 +52,11 @@ const PokemonList = () => {
                 setPokemonData(state => data.results);
                 setNextUrl(state => data.next);
             
-                if (pokemonListStorage != null && !onScreen) return;
-
                 const promises = [];
                 const pokemonArray = [];
                 
+                if (pokemonListStorage.length > 0 && !onScreen) return;
+
                 // Get + extract detail for pokemon item
                 for (let i = offset + 1; i <= offset + limit; i++) {
                     promises.push(
@@ -103,6 +105,7 @@ const PokemonList = () => {
     }, [nextUrl]);
     
     // Clear localStorage when exit tab
+    /*
     useEffect(() => {
         // window.addEventListener('beforeunload', handleTabClosing)
         window.addEventListener('unload', handleTabClosing)
@@ -117,12 +120,14 @@ const PokemonList = () => {
         localStorage.removeItem('offset');
         localStorage.removeItem('nextUrl');
     }
+    */
 
     // Infinite scroll (auto fetch data when reached bottom)
     useEffect(() => {
         if (onScreen && pokemonList.length > 0 && !error) {
-            if (nextUrl != null) {
+            if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length >= 0)) {
                 setLoadMore(true);
+
                 const timer = setTimeout(() => {
                     // console.log('infinite loading...');
                     setOffset(prevOffset => prevOffset += limit);
@@ -130,19 +135,29 @@ const PokemonList = () => {
 
                 return () => {
                     clearTimeout(timer);
-                    setLoadMore(false);
                 };
             } else {
-                console.log('No more data');
-                console.log(onScreen, nextUrl, pokemonList.length, error);
+                alert('No more data');
             } 
         }
-    }, [onScreen]);
+
+        return () => {
+            setLoadMore(false);
+        };
+
+    }, [onScreen]); // error, filteredListPokemon, pokemonList.length, nextUrl
 
     const loadMorePokemon = () => {
         // console.log('load more');
         getPokemonData();
     }
+
+    const getFilteredListPokemon = (data) => {
+        // console.log(data);
+        setTimeout(() => {
+            setFilteredListPokemon(data);
+        }, 500);
+    };
 
     let content = <div style={{minHeight: '80vh'}}>{isLoading && <LoadingIndicator type='fixed'/>}</div>;
 
@@ -187,11 +202,34 @@ const PokemonList = () => {
         content = <p>{error}</p>;
     }
 
+    let filteredListContent = (
+        <ul className={classes['list']}>
+            {
+                filteredListPokemon && (
+                    filteredListPokemon.map(name => (
+                        <PokemonItem key={name} item={name} type='filtered'></PokemonItem>
+                    ))
+                )
+            }
+        </ul>
+    );
+
     return (
         <div className={`${classes['wrap-pokemon-list']} content`}>
-            {content}
-            <div ref={loader} className="end" style={{display: error ? 'none' : 'block'}}></div>
-            {loadMore && <LoadingIndicator/>}
+            <SearchPokemon searchHandler={getFilteredListPokemon}/>
+            {
+                filteredListPokemon ? (
+                    filteredListPokemon.length > 0 ? filteredListContent : <p>No results match</p>
+                ) : (
+                    <Fragment>
+                        {content}
+                        {loadMore && <div style={{marginTop: '-30px'}}><LoadingIndicator/></div>}
+                    </Fragment>
+                )
+            }
+            <div ref={loader} className='end' style={{
+                display: error && pokemonList.length ? 'none' : 'block'}}>
+            </div>
         </div>
     )
 };

@@ -1,16 +1,29 @@
 footer {
     background-color: #fff;
-    padding: 20px;
+    padding: 20px 10px;
     text-align: center;
     .copy-right {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 500;
+        margin-bottom: 5px;
     }
     .reference {
-        font-size: 13px;
+        font-size: 11px;
         color: #333;
         a {
             color: blue;
+        }
+    }
+}
+
+@media (min-width: 1024px) {
+    footer {
+        padding: 20px;
+        .copy-right {
+            font-size: 14px;
+        }
+        .reference {
+            font-size: 13px;
         }
     }
 }

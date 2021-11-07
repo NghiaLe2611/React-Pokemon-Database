@@ -11,12 +11,14 @@ const typeArr = [
     'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'steel', 'fairy'
 ];
 
+const apiUrl = 'https://pokeapi.co/api/v2/pokemon?limit=30';
+
 const PokemonMainPage = () => {
     const [state, dispatchState] = useReducer(pokemonReducer, {
         data: JSON.parse(localStorage.getItem('pokemonTableData')) || [],
         isLoading: false,
         error: null,
-        nextUrl: localStorage.getItem('nextUrl') || 'https://pokeapi.co/api/v2/pokemon?limit=20',
+        nextUrl: localStorage.getItem('nextUrl') || apiUrl,
         sortName: 'id',
         sortType: 'asc'
     });
@@ -155,9 +157,7 @@ const PokemonMainPage = () => {
         const pokemonDataStorage = JSON.parse(localStorage.getItem('pokemonTableData')) || [];
         if (pokemonDataStorage.length <= 0) {
             console.log('Get all pokemons');
-            getAllPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
-        } else {
-            console.log('Get pokemonData localStorage')
+            getAllPokemons(apiUrl);
         }
     }, []);   
 
@@ -171,7 +171,7 @@ const PokemonMainPage = () => {
         if (state.data.length > 0) {
             getAllPokemons(state.nextUrl);
         } else {
-            getAllPokemons('https://pokeapi.co/api/v2/pokemon?limit=20');
+            getAllPokemons(apiUrl);
         }
     }
 
@@ -264,60 +264,63 @@ const PokemonMainPage = () => {
         } else if (view === 'TABLE') {
             content = (
                 <Fragment>
-                    <table id='pokedex' className={classes['pokemon-table']}>
-                        <thead>
-                            <tr>
-                                <th className={`${classes.sorting} ${getClassName('id')}`}
-                                    onClick={() => sortHandler('id')}
-                                >#</th>
-                                <th className={`${classes.sorting} ${getClassName('name')}`}
-                                    onClick={() => sortHandler('name')}
-                                >Name</th>
-                                <th>Type</th>
-                                <th className={`${classes.sorting} ${getClassName('total')}`}
-                                    onClick={() => sortHandler('total')}
-                                >Total</th>
-                                <th className={`${classes.sorting} ${getClassName('hp')}`}
-                                    onClick={() => sortHandler('hp')}
-                                >HP</th>
-                                <th className={`${classes.sorting} ${getClassName('attack')}`}
-                                    onClick={() => sortHandler('attack')}
-                                >Attack</th>
-                                <th className={`${classes.sorting} ${getClassName('defense')}`}
-                                    onClick={() => sortHandler('defense')}
-                                >Defense</th>
-                                <th className={`${classes.sorting} ${getClassName('sp-attack')}`}
-                                    onClick={() => sortHandler('sp-attack')}
-                                >Sp. Atk</th>
-                                <th className={`${classes.sorting} ${getClassName('sp-defense')}`}
-                                    onClick={() => sortHandler('sp-defense')}
-                                >Sp. Def</th>
-                                <th className={`${classes.sorting} ${getClassName('speed')}`}
-                                    onClick={() => sortHandler('speed')}
-                                >Speed</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                sortedPokemonList.length > 0 && (
-                                    sortedPokemonList.map((item) => (
-                                        <tr key={item.id}>
-                                            <PokemonTableItem
-                                                name={item.name}
-                                                id={item.id}
-                                                types={item.types}
-                                                stats={item.stats}
-                                                image={item.image}
-                                            />
-                                        </tr>
-                                    ))
-                                )
-                            }
-                        </tbody>
-                    </table>
-                    { sortedPokemonList.length <= 0 && <p style={{marginLeft: 30}}>No result found. Please try again.</p> }
+                    <div className={classes['table-container']}>
+                        <table id='pokedex' className={classes['pokemon-table']}>
+                            <thead>
+                                <tr>
+                                    <th className={`${classes.sorting} ${getClassName('id')}`}
+                                        onClick={() => sortHandler('id')}
+                                    >#</th>
+                                    <th className={`${classes.sorting} ${getClassName('name')}`}
+                                        onClick={() => sortHandler('name')}
+                                    >Name</th>
+                                    <th>Type</th>
+                                    <th className={`${classes.sorting} ${getClassName('total')}`}
+                                        onClick={() => sortHandler('total')}
+                                    >Total</th>
+                                    <th className={`${classes.sorting} ${getClassName('hp')}`}
+                                        onClick={() => sortHandler('hp')}
+                                    >HP</th>
+                                    <th className={`${classes.sorting} ${getClassName('attack')}`}
+                                        onClick={() => sortHandler('attack')}
+                                    >Attack</th>
+                                    <th className={`${classes.sorting} ${getClassName('defense')}`}
+                                        onClick={() => sortHandler('defense')}
+                                    >Defense</th>
+                                    <th className={`${classes.sorting} ${getClassName('sp-attack')}`}
+                                        onClick={() => sortHandler('sp-attack')}
+                                    >Sp. Atk</th>
+                                    <th className={`${classes.sorting} ${getClassName('sp-defense')}`}
+                                        onClick={() => sortHandler('sp-defense')}
+                                    >Sp. Def</th>
+                                    <th className={`${classes.sorting} ${getClassName('speed')}`}
+                                        onClick={() => sortHandler('speed')}
+                                    >Speed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    sortedPokemonList.length > 0 && (
+                                        sortedPokemonList.map((item) => (
+                                            <tr key={item.id}>
+                                                <PokemonTableItem
+                                                    name={item.name}
+                                                    id={item.id}
+                                                    types={item.types}
+                                                    stats={item.stats}
+                                                    image={item.image}
+                                                />
+                                            </tr>
+                                        ))
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                        { sortedPokemonList.length <= 0 && <p style={{marginLeft: 30}}>No result found. Please try again.</p> }
+                    </div>
                     <button className={classes.button} onClick={loadMoreHandler}>Load more</button>
                 </Fragment>
+                
             );
         }
     }
@@ -327,18 +330,20 @@ const PokemonMainPage = () => {
             <div className={`${classes['wrap-pokemon-list']} content ${isFiltering ? classes.filtering : ''}`}>
                 <div className={classes['wrap-filter']}>
                     <div className={classes.filter}>
-                        <div className={classes.search}>
+                        <div className={classes['wrap-ip']}>
                             <span>Name:</span><input type="text" className={classes.input} onChange={onSearchHandler}/>
                         </div>
-                        <span>Type:</span> 
-                        <select className={classes.input} onChange={filterTypeHandler}>              
-                            <option value=''>-All-</option>
-                            {
-                                typeArr.map(type => (
-                                    <option key={type} value={type}>{capitalizeFirstLetter(type)}</option>
-                                ))
-                            }
-                        </select>
+                        <div className={classes['wrap-ip']}>
+                            <span>Type:</span> 
+                            <select className={classes.input} onChange={filterTypeHandler}>              
+                                <option value=''>-All-</option>
+                                {
+                                    typeArr.map(type => (
+                                        <option key={type} value={type}>{capitalizeFirstLetter(type)}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div className={classes['wrap-btn']}>
                         <button onClick={() => changeViewHandler('LIST')} title="View list" className={`${classes.first} ${view === 'LIST' ? classes.active : ''}`}></button>
