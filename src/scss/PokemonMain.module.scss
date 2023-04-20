@@ -92,6 +92,26 @@
     }
 }
 
+.wrap-pokemon-list {
+    margin-bottom: 60px;
+    padding: 20px;
+    position: relative;
+    &.filtering {
+        &:after {
+            content: "";
+            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    }
+}
+
 @media (max-width: 1024px) {
     .table-container {
         overflow: auto;
@@ -136,5 +156,5 @@
     }
 }
 
-@import "./PokemonList";
-@import "./PokemonTable";
+// @import "./PokemonList";
+// @import "./PokemonTable";

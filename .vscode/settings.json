@@ -1,0 +1,13 @@
+{
+    "editor.fontFamily": "Cousine, 'MonoLisa','SF Mono', 'Courier New', monospace",
+    "prettier.jsxSingleQuote": true,
+    "prettier.printWidth": 120,
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    "prettier.useTabs": true,
+    "prettier.jsxBracketSameLine": true,
+    "files.associations": {
+        "*.js": "javascriptreact"
+    },
+    "javascript.validate.enable": true
+}

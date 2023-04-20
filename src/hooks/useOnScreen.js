@@ -9,22 +9,22 @@ const useOnScreen = (ref, rootMargin = '0px') => {
 			([entry]) => {
 				// Update our state when observer callback fires
 				setIntersecting(entry.isIntersecting);
-			}, {
+			},
+			{
 				rootMargin,
 			}
 		);
-        const current = ref.current;
+		const current = ref.current;
 		if (current) {
 			observer.observe(current);
 		}
 		return () => {
 			observer.unobserve(current);
 		};
-	}, [ref, rootMargin]); 
-    
-	return isIntersecting;
-}
+	}, [ref, rootMargin]);
 
+	return isIntersecting;
+};
 
 // import { useState, useEffect } from 'react';
 
