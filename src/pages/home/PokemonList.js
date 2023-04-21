@@ -3,13 +3,16 @@ import PokemonItem from 'components/List/PokemonItem';
 import classes from 'scss/PokemonList.module.scss';
 
 const PokemonList = forwardRef(({ data, onLoadMore }, ref) => {
-	console.log(123, ref);
 	return (
 		<div ref={ref}>
 			<ul className={classes['list']}>
 				{data.length > 0 ? (
-					data.map((item) => {
-						return <PokemonItem key={item.id} item={item}></PokemonItem>;
+					data.map((item, index) => {
+						if (data.length === index + 1) {
+							return <PokemonItem key={item.id} item={item} ref={ref} />;
+						} else {
+							return <PokemonItem key={item.id} item={item} />;
+						}
 					})
 				) : (
 					<p style={{ marginLeft: 30 }}>No result found. Please try again.</p>

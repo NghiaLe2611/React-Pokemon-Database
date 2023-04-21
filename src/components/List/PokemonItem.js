@@ -1,13 +1,13 @@
-import { Fragment } from 'react';
+import { Fragment, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import classes from '../../scss/PokemonItem.module.scss';
 import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../../helpers/helpers';
 
-const PokemonItem = (props) => {
+const PokemonItem = forwardRef((props, ref) => {
     const { id, name, types } = props.item;
 
     return (
-        <li className={classes.item}>
+        <li className={classes.item} ref={ref}>
             {
                 props.type !== 'filtered' ? (
                     <Fragment>
@@ -50,6 +50,6 @@ const PokemonItem = (props) => {
             }
         </li>
     );
-};
+});
 
 export default PokemonItem;

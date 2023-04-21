@@ -12,7 +12,9 @@ export const pokemonReducer = (state, action) => {
 				isLoading: false,
 				error: null,
 				data: state.data.concat(action.payload.list),
-                nextUrl: action.payload.nextUrl
+                total: action.payload.count,
+                nextUrl: action.payload.nextUrl,
+                hasMore: action.payload.hasMore
 			};
 		case 'FETCH_FAILURE':
 			return {
