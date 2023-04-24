@@ -1,5 +1,5 @@
 import { forwardRef, memo } from 'react';
-import PokemonItem from 'components/List/PokemonItem';
+import PokemonItem from './PokemonItem';
 import classes from 'scss/PokemonList.module.scss';
 
 const PokemonList = forwardRef(({ data, onLoadMore }, ref) => {

@@ -41,10 +41,8 @@ const PokemonMainPage = () => {
 		nextUrl: localStorage.getItem('nextUrl') || apiUrl,
 		sortName: 'id',
 		sortType: 'asc',
-		hasMore: false
+		hasMore: false,
 	});
-	const [pokemonList, setPokemonList] = useState([]);
-
 	const [filterType, setFilterType] = useState('');
 	const [isFiltering, setIsFiltering] = useState(false);
 	const [searchKey, setSearchKey] = useState('');
@@ -115,102 +113,133 @@ const PokemonMainPage = () => {
 		return sortableItems;
 	}, [state.data, state.sortName, state.sortType, filterType, searchKey]);
 
-	const getAllPokemons = async (url) => {
-		const fetchData = async () => {
-			const response = await fetch(url, {
-				method: 'GET',
-			});
+	// const getAllPokemons = async (url) => {
+	// 	const fetchData = async () => {
+	// 		const response = await fetch(url, {
+	// 			method: 'GET',
+	// 		});
 
-			dispatchState({ type: 'FETCH_INIT' });
+	// 		dispatchState({ type: 'FETCH_INIT' });
 
-			if (!response.ok) {
-				throw new Error('Could not fetch data!');
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error('Could not fetch data!');
+	// 		}
 
-			const data = await response.json();
-			return data;
-		};
+	// 		const data = await response.json();
+	// 		return data;
+	// 	};
 
-		try {
-			const data = await fetchData();
-			let pokemonList = [];
+	// 	try {
+	// 		const data = await fetchData();
+	// 		let pokemonList = [];
 
-			if (data) {
-				async function createPokemonObject(results) {
-					for (const pokemon of results) {
-						const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-						const detail = await res.json();
-						const types = detail.types.map((item) => item.type.name);
+	// 		if (data) {
+	// 			async function createPokemonObject(results) {
+	// 				for (const pokemon of results) {
+	// 					const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
+	// 					const detail = await res.json();
+	// 					const types = detail.types.map((item) => item.type.name);
 
-						const pokemonInfo = {
-							id: detail.id,
-							name: detail.name,
-							stats: detail.stats,
-							types: types,
-							image: detail.sprites.front_default,
-						};
-						pokemonList = [...pokemonList, pokemonInfo];
-					}
+	// 					const pokemonInfo = {
+	// 						id: detail.id,
+	// 						name: detail.name,
+	// 						stats: detail.stats,
+	// 						types: types,
+	// 						image: detail.sprites.front_default,
+	// 					};
+	// 					pokemonList = [...pokemonList, pokemonInfo];
+	// 				}
 
-					dispatchState({
-						type: 'FETCH_SUCCESS',
-						payload: {
-							count: data.count,
-							list: pokemonList,
-							nextUrl: data.next,
-							hasMore: results.length > 0
-						},
-					});
-				}
+	// 				dispatchState({
+	// 					type: 'FETCH_SUCCESS',
+	// 					payload: {
+	// 						count: data.count,
+	// 						list: pokemonList,
+	// 						nextUrl: data.next,
+	// 						hasMore: results.length > 0,
+	// 					},
+	// 				});
+	// 			}
 
-				createPokemonObject(data.results);
-			}
-		} catch (err) {
-			dispatchState({
-				type: 'FETCH_FAILURE',
-				error: err.message,
-			});
-		}
-	};
-	
-	useEffect(() => {
-		async function fetchSequenceData() {
+	// 			createPokemonObject(data.results);
+	// 		}
+	// 	} catch (err) {
+	// 		dispatchState({
+	// 			type: 'FETCH_FAILURE',
+	// 			error: err.message,
+	// 		});
+	// 	}
+	// };
+
+	// =====Cách 1: LOAD ALL=====
+	/*
+		async function getAllPokemons() {
 			const response = await axios.get('https://pokeapi.co/api/v2/pokemon/');
-			const pokemonUrls = response.data.results.map((result) => result.url);
-
-			pokemonUrls.forEach(async (url) => {
-				const pokemonResponse = await axios.get(url);
-				const pokemon = {
-					name: pokemonResponse.data.name,
-					image: pokemonResponse.data.sprites.front_default,
-					height: pokemonResponse.data.height,
-					weight: pokemonResponse.data.weight,
-				};
-
-				setPokemonList((prevList) => [...prevList, pokemon]);
-			});
-		}
-
-		// fetchSequenceData();
-
-		async function getPokemons() {
-			const response = await axios.get('https://pokeapi.co/api/v2/pokemon/');
-
 			const { results } = response.data;
 			const pokemonDataPromises = results.map((result) => axios.get(result.url));
 			const pokemonDataResponses = await Promise.all(pokemonDataPromises);
 			const pokemonData = pokemonDataResponses.map((response) => response.data);
-			console.log(123, response.data);
 		}
 
-		// getPokemons();
+		const getPokemonDetails = async () => {
+			const details = await Promise.all(
+				pokemonData.map(async (pokemon) => {
+					const response = await fetch(pokemon.url);
+					const data = await response.json();
+					return data;
+				})
+			);
+			setPokemonDetails(details);
+		};
+		*/
+
+	// =====Cách 2: LOAD lần lượt=====
+	async function getAllPokemons(url = 'https://pokeapi.co/api/v2/pokemon/') {
+		const response = await axios.get(url);
+		const { data } = response;
+		const pokemonUrls = data.results.map((result) => result.url);
+
+		pokemonUrls.forEach(async (url) => {
+			const pokemonResponse = await axios.get(url);
+			const detail = pokemonResponse.data;
+			const types = detail.types.map((item) => item.type.name);
+
+			const pokemon = {
+				id: detail.id,
+				name: detail.name,
+				image: detail.sprites.front_default,
+				height: detail.height,
+				weight: detail.weight,
+				stats: detail.stats,
+				types: types,
+			};
+			// setPokemonList((prevList) => [...prevList, pokemon]);
+			dispatchState({
+				type: 'FETCH_SUCCESS',
+				payload: {
+					count: data.count,
+					list: [pokemon],
+					nextUrl: data.next,
+					hasMore: data.results.length > 0,
+				},
+			});
+		});
+	}
+
+	// Scroll to top
+	useEffect(() => {
+		window.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth',
+		});
 	}, []);
 
 	useEffect(() => {
 		const pokemonDataStorage = JSON.parse(localStorage.getItem('pokemonTableData')) || [];
 		if (pokemonDataStorage.length <= 0) {
 			console.log('Get all pokemons');
-			getAllPokemons(apiUrl);
+			getAllPokemons();
 		}
 	}, []);
 
@@ -331,9 +360,7 @@ const PokemonMainPage = () => {
 	}
 
 	return (
-		<div
-			className={`${classes['wrap-pokemon-list']} content ${isFiltering ? classes.filtering : ''}`}
-		>
+		<div className={`${classes['wrap-pokemon-list']} content ${isFiltering ? classes.filtering : ''}`}>
 			<div className={classes['wrap-filter']}>
 				<div className={classes.filter}>
 					<div className={classes['wrap-ip']}>
@@ -356,13 +383,11 @@ const PokemonMainPage = () => {
 					<button
 						onClick={() => changeViewHandler('LIST')}
 						title='View list'
-						className={`${classes.first} ${view === 'LIST' ? classes.active : ''}`}
-					></button>
+						className={`${classes.first} ${view === 'LIST' ? classes.active : ''}`}></button>
 					<button
 						onClick={() => changeViewHandler('TABLE')}
 						title='View table'
-						className={`${classes.second} ${view === 'TABLE' ? classes.active : ''}`}
-					></button>
+						className={`${classes.second} ${view === 'TABLE' ? classes.active : ''}`}></button>
 				</div>
 			</div>
 			{content}

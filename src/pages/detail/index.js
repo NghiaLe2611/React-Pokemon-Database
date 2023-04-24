@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useCallback } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import LoadingIndicator from 'components/UI/LoadingIndicator';
 import { capitalizeFirstLetter, convertPokemonInfo, formatStatString, convertPokemonId } from 'helpers/helpers';
@@ -6,6 +6,8 @@ import styled, { keyframes, css } from 'styled-components';
 import useFetch from 'hooks/useFetch';
 import NotFound from 'pages/NotFound';
 import classes from 'scss/PokemonDetail.module.scss';
+import { useEffectOnce } from 'hooks/useEffectOnce';
+import axios from 'axios';
 
 const BASE_MAX_STAT = 180;
 

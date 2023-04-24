@@ -6,6 +6,8 @@ const NavigationScroll = ({ children }) => {
 	const { pathname } = location;
 
 	useEffect(() => {
+		console.log(111, pathname);
+
 		window.scrollTo({
 			top: 0,
 			left: 0,

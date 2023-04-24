@@ -1,6 +1,6 @@
 import { Fragment, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
-import classes from '../../scss/PokemonItem.module.scss';
+import classes from 'scss/PokemonItem.module.scss';
 import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../../helpers/helpers';
 
 const PokemonItem = forwardRef((props, ref) => {
@@ -12,10 +12,7 @@ const PokemonItem = forwardRef((props, ref) => {
                 props.type !== 'filtered' ? (
                     <Fragment>
                         <figure className={classes.image}>
-                            <Link to={{
-                                pathname: `/pokemon/${id}`,
-                                state: { id: id }
-                            }}>
+                            <Link to={`/pokemon/${id}`}>
                                 <img src={`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${convertPokemonId(id)}.png`} alt={name} />
                             </Link>
                         </figure>
