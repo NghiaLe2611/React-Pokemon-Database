@@ -7,6 +7,8 @@ import NotFound from 'pages/NotFound';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Navigation from 'components/UI/Navigation';
 import Footer from 'components/UI/Footer';
+import PokemonList1 from 'components/List/PokemonList1';
+import PokemonList2 from 'components/List/PokemonList2';
 
 const HomePage = Loadable(lazy(() => import('pages/home')));
 const PokemonDetail = Loadable(lazy(() => import('pages/detail')));
@@ -28,6 +30,18 @@ const routes = [
 			{
 				path: '/pokemon/type/:pokemonType',
 				element: <PokemonType />,
+				nodeRef: createRef(),
+				exact: true,
+			},
+			{
+				path: '/pokemon/list1',
+				element: <PokemonList1 />,
+				nodeRef: createRef(),
+				exact: true,
+			},
+			{
+				path: '/pokemon/list2',
+				element: <PokemonList2 />,
 				nodeRef: createRef(),
 				exact: true,
 			},

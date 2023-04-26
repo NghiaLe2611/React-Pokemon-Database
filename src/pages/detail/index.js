@@ -6,10 +6,47 @@ import styled, { keyframes, css } from 'styled-components';
 import useFetch from 'hooks/useFetch';
 import NotFound from 'pages/NotFound';
 import classes from 'scss/PokemonDetail.module.scss';
-import { useEffectOnce } from 'hooks/useEffectOnce';
+import { Helmet } from 'react-helmet';
 import axios from 'axios';
+import DataTable from 'components/DataTable';
+import PokemonTypes from 'components/PokemonTypes';
 
 const BASE_MAX_STAT = 180;
+
+const movesHeadcells = [
+	{
+		name: 'name',
+		label: 'Move',
+		display: (value) => {
+			return <Link to={`/move/${value}`}>{formatStatString(value)}</Link>
+		},
+		className: 'link',
+		width: 200
+	},
+	{
+		name: 'type',
+		label: 'Type',
+		display: (value) => {
+			return <Link to={`/pokemon/type/${value}`} className={`color-${value}`}>{value}</Link>
+		},
+		className: 'type',
+	},
+	{
+		name: 'cate',
+		label: 'Cat.',
+		display: (value) => {
+			return <img style={{width: 30}} src={`/images/move-${value}.png`} alt={value} title={value} />
+		},
+	},
+	{
+		name: 'power',
+		label: 'Power'
+	},
+	{
+		name: 'accuracy',
+		label: 'Accuracy'
+	}
+]
 
 // Animation Progress Bar using styled-components
 const progressAnimation = keyframes`
@@ -40,6 +77,8 @@ const PokemonDetail = () => {
 	const [evolutionChain, setEvolutionChain] = useState(null);
 	const [types, setTypes] = useState(null);
 	const [stats, setStats] = useState(null);
+	const [moves, setMoves] = useState([]);
+	const [imageSrc, setImageSrc] = useState('');
 
 	const { isLoading, error, fetchData: fetchPokemon } = useFetch();
 
@@ -70,54 +109,93 @@ const PokemonDetail = () => {
 		);
 	}, [fetchPokemon, pokemonId]);
 
+	// Get species & evolution chain
 	useEffect(() => {
+		// `https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`
 		const fetchSpecies = async () => {
-			const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`, {
-				method: 'GET',
-			});
+			try {
+				const response = await axios.get(pokemonDetail.species.url);
 
-			// if (!response.ok) {
-			//     error = "Request failed. Please try again !";
-			// }
-
-			return await response.json();
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
 		};
 
 		const fetchEvolutionChain = async (evolutionChainUrl) => {
-			const response = await fetch(evolutionChainUrl, {
-				method: 'GET',
-			});
+			try {
+				const response = await axios.get(evolutionChainUrl);
 
-			// if (!response.ok) {
-			//     error = "Request failed. Please try again !";
-			// }
-
-			return await response.json();
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
 		};
 
-		fetchSpecies().then(function (species) {
-			if (species['evolution_chain'].url) {
-				fetchEvolutionChain(species['evolution_chain'].url).then((evolutionChain) => {
-					let evoChain = [];
-					var evoData = evolutionChain.chain;
-					do {
-						const evoDetails = evoData['evolution_details'][0];
+		const fetchMoves = async () => {};
 
-						evoChain.push({
-							name: evoData.species.name,
-							min_level: !evoDetails ? 1 : evoDetails.min_level,
-							// 'trigger_name': !evoDetails ? null : evoDetails.trigger.name,
-							// 'item': !evoDetails ? null : evoDetails.item
-						});
+		if (pokemonDetail) {
+			fetchSpecies().then(function (species) {
+				if (species['evolution_chain'].url) {
+					fetchEvolutionChain(species['evolution_chain'].url).then((evolutionChain) => {
+						let evoChain = [];
+						var evoData = evolutionChain.chain;
+						do {
+							const evoDetails = evoData['evolution_details'][0];
 
-						evoData = evoData['evolves_to'][0];
-					} while (!!evoData && evoData.hasOwnProperty('evolves_to')); // Convert object to boolean (return true/false)
+							evoChain.push({
+								name: evoData.species.name,
+								min_level: !evoDetails ? 1 : evoDetails.min_level,
+								// 'trigger_name': !evoDetails ? null : evoDetails.trigger.name,
+								// 'item': !evoDetails ? null : evoDetails.item
+							});
 
-					setEvolutionChain(evoChain);
-				});
-			}
-		});
-	}, [pokemonId]);
+							evoData = evoData['evolves_to'][0];
+						} while (!!evoData && evoData.hasOwnProperty('evolves_to')); // Convert object to boolean (return true/false)
+
+						setEvolutionChain(evoChain);
+					});
+				}
+			});
+
+			const moveUrls = pokemonDetail.moves
+				.filter((item) =>
+					item.version_group_details.some((detail) => detail.move_learn_method.name === 'level-up')
+				)
+				.map(
+					(move) =>
+						// name: move.move.name,
+						// level_learned_at: move.version_group_details.find(
+						// 	(detail) => detail.move_learn_method.name === 'level-up'
+						// ).level_learned_at,
+						move.move.url
+				);
+
+			moveUrls.forEach(async (url) => {
+				const res = await axios.get(url);
+				const { data } = res;
+				const move = {
+					id: data.id,
+					name: data.name,
+					cate: data.damage_class.name,
+					accuracy: data.accuracy,
+					power: data.power,
+					type: data.type.name,
+				};
+				setMoves(prevMoves => [...prevMoves, move]);
+			});
+		}
+	}, [pokemonDetail]);
+
+	useEffect(() => {
+		if (pokemonDetail) {
+			setImageSrc(`https://img.pokemondb.net/artwork/${pokemonDetail.name}.jpg`);
+		}
+	}, [pokemonDetail]);
+
+	const handleImageError = () => {
+		setImageSrc(pokemonDetail.sprites.other.home['front_default']);
+	};
 
 	let content = <div style={{ minHeight: '80vh' }}>{<LoadingIndicator type='fixed' />}</div>;
 
@@ -126,7 +204,7 @@ const PokemonDetail = () => {
 			<Fragment>
 				<h1 className={classes.title}>{capitalizeFirstLetter(pokemonDetail.species.name)}</h1>
 				<div className={classes['img']}>
-					<img src={`https://img.pokemondb.net/artwork/${pokemonDetail.name}.jpg`} alt='' />
+					<img src={imageSrc} alt={pokemonDetail.name} onError={handleImageError} />
 				</div>
 				<div className={classes['wrap-pokemon-info']}>
 					<h3 className={classes.heading}>Pokédex data</h3>
@@ -145,19 +223,7 @@ const PokemonDetail = () => {
 							<tr>
 								<td>Type</td>
 								<td>
-									<ul className={classes.types}>
-										{types &&
-											types.map((color) => (
-												<li key={color}>
-													<Link
-														to={`/pokemon/type/${color}`}
-														className={classes[`color-${color}`]}
-													>
-														{capitalizeFirstLetter(color)}
-													</Link>
-												</li>
-											))}
-									</ul>
+									<PokemonTypes types={types} />
 								</td>
 							</tr>
 							<tr>
@@ -192,6 +258,20 @@ const PokemonDetail = () => {
 						</tbody>
 					</table>
 				</div>
+				<div className={classes['wrap-pokemon-moves']}>
+					<h3 className={classes.heading}>Moves learned by {capitalizeFirstLetter(pokemonDetail.name)}</h3>
+					<div className={classes.moves}>
+						<h4 className={classes.h4}>Moves learnt by level up</h4>
+						<DataTable 
+							headCells={movesHeadcells}
+							data={moves}
+						/>
+					</div>
+
+					<div className={classes.moves}>
+						<h4 className={classes.h4}>Moves learnt by TM</h4>
+					</div>
+				</div>
 				<div className={classes['wrap-evolution-chain']}>
 					<h3 className={classes.heading}>Evolution Chain</h3>
 					{evolutionChain ? (
@@ -217,7 +297,16 @@ const PokemonDetail = () => {
 	}
 
 	return !error ? (
-		<div className={`${classes['wrap-pokemon-detail']} content`}>{content}</div>
+		<>
+			<Helmet>
+				<title>
+					{pokemonDetail
+						? `${capitalizeFirstLetter(pokemonDetail.name)} | Pokémon Database`
+						: 'Pokemon Detail'}
+				</title>
+			</Helmet>
+			<div className={`${classes['wrap-pokemon-detail']} content`}>{content}</div>
+		</>
 	) : (
 		<NotFound>
 			<p>

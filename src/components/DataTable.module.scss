@@ -1,0 +1,175 @@
+.data-table {
+    background-color: #fff;
+    position: relative;
+
+    &.is-sorting:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        opacity: 0.6;
+    }
+
+    thead {
+        th {
+            font-weight: 500;
+
+            &:first-child {
+                width: 120px;
+            }
+        }
+    }
+
+    // tr {
+    //     &:hover {
+    //         background-color: #fff9e0;
+    //     }
+    // }
+
+    th,
+    td {
+        vertical-align: middle;
+        border: 1px solid #ddd;
+        padding: 4px 10px;
+        text-align: center;
+    }
+
+    th {
+        padding: 8px 10px;
+        font-size: 18px;
+        background-color: #ebebe5;
+    }
+
+    td {
+        font-size: 16px;
+    }
+
+    .sorting {
+        cursor: pointer;
+        position: relative;
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            background-color: #858585;
+            mask: url(../assets/images/icon-sort.svg) no-repeat center / contain;
+            -webkit-mask: url(../assets/images/icon-sort.svg) no-repeat center / contain;
+        }
+    }
+
+    .asc {
+        background-color: #ecdfec;
+
+        &:after {
+            mask: url(../assets/images/icon-sortup.svg) no-repeat center / contain;
+            -webkit-mask: url(../assets/images/icon-sortup.svg) no-repeat center / contain;
+        }
+    }
+
+    .desc {
+        background-color: #ecdfec;
+
+        &:after {
+            mask: url(../assets/images/icon-sortdown.svg) no-repeat center / contain;
+            -webkit-mask: url(../assets/images/icon-sortdown.svg) no-repeat center / contain;
+        }
+    }
+}
+
+.link {
+    font-weight: 500;
+    color: #2769be;
+
+    &:hover {
+        color: #a42121;
+        text-decoration: underline;
+    }
+
+    a {
+        font-weight: 500;
+        color: #2769be;
+
+        &:hover {
+            color: #a42121;
+            text-decoration: underline;
+        }
+    }
+}
+
+.type {
+    a {
+        display: inline-block;
+        text-transform: uppercase;
+        padding: 5px;
+        font-size: 14px;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        border-radius: 5px;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+}
+
+.button {
+    display: block;
+    padding: 10px 40px;
+    font-size: 16px;
+    background-color: #fdbb2e;
+    color: #fff;
+    cursor: pointer;
+    margin: 50px auto;
+}
+
+@media (max-width: 1024px) {
+    .table-container {
+        overflow: auto;
+        width: 100%;
+
+        .pokemon-table {
+            width: 960px;
+
+            thead tr th {
+                min-width: 100px;
+
+                &:nth-child(2) {
+                    min-width: 140px;
+                }
+            }
+
+            th {
+                font-size: 15px;
+                padding: 10px 5px;
+            }
+
+            td {
+                font-size: 14px;
+                padding: 2px 5px;
+            }
+        }
+
+        &::-webkit-scrollbar {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            height: 7px
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background-color: rgba(169, 169, 169, .5);
+            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5)
+        }
+    }
+}

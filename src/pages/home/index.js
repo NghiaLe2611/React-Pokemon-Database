@@ -1,14 +1,12 @@
 import { useState, useEffect, useMemo, useCallback, useReducer, Fragment, useRef } from 'react';
 import LoadingIndicator from 'components/UI/LoadingIndicator';
-import PokemonItem from 'components/List/PokemonItem';
-import PokemonTableItem from 'components/Table/PokemonTableItem';
-import { pokemonReducer } from 'store/reducers/pokemonReducer';
+import { apiUrl, initialState, pokemonReducer } from 'store/reducers/pokemonReducer';
 import classes from 'scss/PokemonMain.module.scss';
 import { capitalizeFirstLetter } from 'helpers/helpers';
 import PokemonList from './PokemonList';
 import PokemonTable from './PokemonTable';
-import PokemonList2 from 'components/List/PokemonList';
 import axios from 'axios';
+import useDebounce from 'hooks/useDebounce';
 
 const typeArr = [
 	'normal',
@@ -30,31 +28,17 @@ const typeArr = [
 	'fairy',
 ];
 
-const apiUrl = 'https://pokeapi.co/api/v2/pokemon?limit=30';
-
 const PokemonMainPage = () => {
-	const [state, dispatchState] = useReducer(pokemonReducer, {
-		data: JSON.parse(localStorage.getItem('pokemonTableData')) || [],
-		total: 0,
-		isLoading: false,
-		error: null,
-		nextUrl: localStorage.getItem('nextUrl') || apiUrl,
-		sortName: 'id',
-		sortType: 'asc',
-		hasMore: false,
-	});
-	const [filterType, setFilterType] = useState('');
-	const [isFiltering, setIsFiltering] = useState(false);
+	const [state, dispatchState] = useReducer(pokemonReducer, initialState);
+	const { data, isLoading, nextUrl, total, sortName, isFiltering, filterType, sortType, view } = state;
 	const [searchKey, setSearchKey] = useState('');
-	const [view, setView] = useState('LIST');
+	const debounceSearchKey = useDebounce(searchKey, 500);
 
-	const observer = useRef();
+	const sortedPokemonList = useMemo(() => {
+		let sortableItems = [...data];
 
-	let sortedPokemonList = useMemo(() => {
-		let sortableItems = [...state.data];
-
-		const type = state.sortType;
-		const key = state.sortName;
+		const type = sortType;
+		const key = sortName;
 
 		const statArr = ['hp', 'attack', 'defense', 'sp-attack', 'sp-defense', 'speed'];
 		const indexStat = statArr.indexOf(key);
@@ -95,7 +79,7 @@ const PokemonMainPage = () => {
 		});
 
 		if (type === '') {
-			sortableItems = [...state.data];
+			sortableItems = [...data];
 		}
 
 		if (filterType.length) {
@@ -104,74 +88,16 @@ const PokemonMainPage = () => {
 			sortableItems = sortableItems.filter((item) => item.name);
 		}
 
-		if (searchKey.length) {
+		if (debounceSearchKey.length) {
 			sortableItems = sortableItems.filter(
-				(item) => item.name.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
+				(item) => item.name.toLowerCase().indexOf(debounceSearchKey.toLowerCase()) > -1
 			);
 		}
 
 		return sortableItems;
-	}, [state.data, state.sortName, state.sortType, filterType, searchKey]);
+	}, [data, sortName, sortType, filterType, debounceSearchKey]);
 
-	// const getAllPokemons = async (url) => {
-	// 	const fetchData = async () => {
-	// 		const response = await fetch(url, {
-	// 			method: 'GET',
-	// 		});
-
-	// 		dispatchState({ type: 'FETCH_INIT' });
-
-	// 		if (!response.ok) {
-	// 			throw new Error('Could not fetch data!');
-	// 		}
-
-	// 		const data = await response.json();
-	// 		return data;
-	// 	};
-
-	// 	try {
-	// 		const data = await fetchData();
-	// 		let pokemonList = [];
-
-	// 		if (data) {
-	// 			async function createPokemonObject(results) {
-	// 				for (const pokemon of results) {
-	// 					const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-	// 					const detail = await res.json();
-	// 					const types = detail.types.map((item) => item.type.name);
-
-	// 					const pokemonInfo = {
-	// 						id: detail.id,
-	// 						name: detail.name,
-	// 						stats: detail.stats,
-	// 						types: types,
-	// 						image: detail.sprites.front_default,
-	// 					};
-	// 					pokemonList = [...pokemonList, pokemonInfo];
-	// 				}
-
-	// 				dispatchState({
-	// 					type: 'FETCH_SUCCESS',
-	// 					payload: {
-	// 						count: data.count,
-	// 						list: pokemonList,
-	// 						nextUrl: data.next,
-	// 						hasMore: results.length > 0,
-	// 					},
-	// 				});
-	// 			}
-
-	// 			createPokemonObject(data.results);
-	// 		}
-	// 	} catch (err) {
-	// 		dispatchState({
-	// 			type: 'FETCH_FAILURE',
-	// 			error: err.message,
-	// 		});
-	// 	}
-	// };
-
-	// =====Cách 1: LOAD ALL=====
+	// =====Cách 1: LOAD all=====
 	/*
 		async function getAllPokemons() {
 			const response = await axios.get('https://pokeapi.co/api/v2/pokemon/');
@@ -195,9 +121,13 @@ const PokemonMainPage = () => {
 
 	// =====Cách 2: LOAD lần lượt=====
 	async function getAllPokemons(url = 'https://pokeapi.co/api/v2/pokemon/') {
+		console.log('Get all pokemons');
+
 		const response = await axios.get(url);
 		const { data } = response;
 		const pokemonUrls = data.results.map((result) => result.url);
+		
+		dispatchState({ type: 'FETCH_INIT' });
 
 		pokemonUrls.forEach(async (url) => {
 			const pokemonResponse = await axios.get(url);
@@ -231,55 +161,94 @@ const PokemonMainPage = () => {
 		window.scrollTo({
 			top: 0,
 			left: 0,
-			behavior: 'smooth',
+			// behavior: 'smooth',
 		});
 	}, []);
 
 	useEffect(() => {
-		const pokemonDataStorage = JSON.parse(localStorage.getItem('pokemonTableData')) || [];
+		const pokemonDataStorage = JSON.parse(localStorage.getItem('pokemonList')) || [];
 		if (pokemonDataStorage.length <= 0) {
-			console.log('Get all pokemons');
 			getAllPokemons();
 		}
 	}, []);
 
+	// Handle localStorage
 	useEffect(() => {
-		localStorage.setItem('pokemonTableData', JSON.stringify(state.data));
-		localStorage.setItem('nextUrl', state.nextUrl);
-		localStorage.setItem('total', state.total);
-	}, [state]);
+		localStorage.setItem('pokemonList', JSON.stringify(data));
+		localStorage.setItem('nextUrl', nextUrl);
+		localStorage.setItem('total', total);
+	}, [data, nextUrl, total]);
+
+	// Infinite scrolling load more data
+	useEffect(() => {
+		const loadMoreData = async () => {
+			if (!nextUrl || isLoading) return;
+			dispatchState({ type: 'FETCH_INIT' });
+			try {
+				const res = await axios.get(nextUrl);
+				const { results, next, count } = res.data;
+				const urls = results.map((result) => result.url);
+
+				urls.forEach(async (url) => {
+					const pokemonResponse = await axios.get(url);
+					const detail = pokemonResponse.data;
+					const types = detail.types.map((item) => item.type.name);
+
+					const pokemon = {
+						id: detail.id,
+						name: detail.name,
+						image: detail.sprites.front_default,
+						height: detail.height,
+						weight: detail.weight,
+						stats: detail.stats,
+						types: types,
+					};
+					dispatchState({
+						type: 'FETCH_SUCCESS',
+						payload: {
+							count: count,
+							list: [pokemon],
+							nextUrl: next,
+							hasMore: results.length > 0,
+						},
+					});
+				});
+			} catch (err) {
+				console.log(err);
+				dispatchState({ type: 'FETCH_FAILURE' });
+			}
+		};
+
+		const handleScroll = () => {
+			const isBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 200;
+			if (isBottom) {
+				console.log('loadMoreData');
+				loadMoreData();
+			}
+		};
+
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, [isLoading, nextUrl]);
 
 	// Infinite scroll
 	const loadMoreHandler = useCallback(() => {
-		console.log('load more');
-		getAllPokemons(state.nextUrl);
-	}, [state.nextUrl]);
+		getAllPokemons(nextUrl);
+	}, [nextUrl]);
 
-	const lastItemRef = useCallback(
-		(node) => {
-			if (state.isLoading) return;
-			if (observer.current) observer.current.disconnect();
-			observer.current = new IntersectionObserver((entries) => {
-				if (entries[0].isIntersecting && state.hasMore) {
-					// loadMoreHandler();
-				}
-			});
-			if (node) observer.current.observe(node);
-		},
-		[state.isLoading, state.hasMore]
-	);
-
+	// Retry get data
 	const retryFetchData = () => {
 		// console.log('Retry data');
-		if (state.data.length > 0) {
-			getAllPokemons(state.nextUrl);
+		if (data.length > 0) {
+			getAllPokemons(nextUrl);
 		} else {
 			getAllPokemons(apiUrl);
 		}
 	};
 
+	// Handle sort data
 	const sortHandler = (filterName) => {
-		setIsFiltering(true);
+		dispatchState({ type: 'FILTERING_DATA', isFiltering: true });
 
 		setTimeout(() => {
 			dispatchState({
@@ -287,53 +256,53 @@ const PokemonMainPage = () => {
 				name: filterName,
 			});
 
-			setIsFiltering(false);
+			dispatchState({ type: 'FILTERING_DATA', isFiltering: false });
 		}, 500);
 	};
 
+	// Handle search data
 	const onSearchHandler = (e) => {
-		setTimeout(() => {
-			setSearchKey(e.target.value);
-		}, 500);
+		setSearchKey(e.target.value);
 	};
 
+	// Handle view data
 	const changeViewHandler = (viewType) => {
-		setIsFiltering(true);
+		dispatchState({ type: 'FILTERING_DATA', isFiltering: true });
 
 		setTimeout(() => {
-			setView(viewType);
-			setIsFiltering(false);
+			dispatchState({ type: 'SET_VIEW_DATA', view: viewType});
+			dispatchState({ type: 'FILTERING_DATA', isFiltering: false });
 		}, 500);
 	};
 
+	// Handle filter data
 	const filterTypeHandler = (e) => {
 		// console.log(e.target.value);
-		setIsFiltering(true);
-
+		dispatchState({ type: 'FILTERING_DATA', isFiltering: true });
 		setTimeout(() => {
-			setFilterType(e.target.value);
-			setIsFiltering(false);
+			dispatchState({ type: 'FILTER_DATA', filterType: e.target.value });
+			dispatchState({ type: 'FILTERING_DATA', isFiltering: false });
 		}, 500);
 	};
 
 	const getClassName = useCallback(
 		(filterName) => {
-			if (filterName === state.sortName) {
-				if (state.sortType === 'asc') {
+			if (filterName === sortName) {
+				if (sortType === 'asc') {
 					return classes.asc;
-				} else if (state.sortType === 'desc') {
+				} else if (sortType === 'desc') {
 					return classes.desc;
 				}
 			}
 
-			return;
+			return "";
 		},
-		[state.sortName, state.sortType]
+		[sortName, sortType]
 	);
 
-	let content = state.isLoading && <LoadingIndicator type='fixed' />;
+	let content = isLoading && <LoadingIndicator type='fixed' />;
 
-	if (state.error && state.data.length <= 0) {
+	if (state.error && data.length <= 0) {
 		content = (
 			<Fragment>
 				<p style={{ backgroundColor: 'white', padding: '10px 20px' }}>{state.error}</p>
@@ -344,9 +313,9 @@ const PokemonMainPage = () => {
 		);
 	}
 
-	if (state.data.length > 0) {
+	if (data.length > 0) {
 		if (view === 'LIST') {
-			content = <PokemonList data={sortedPokemonList} onLoadMore={loadMoreHandler} ref={lastItemRef} />;
+			content = <PokemonList data={sortedPokemonList} onLoadMore={loadMoreHandler} />;
 		} else if (view === 'TABLE') {
 			content = (
 				<PokemonTable
@@ -391,19 +360,8 @@ const PokemonMainPage = () => {
 				</div>
 			</div>
 			{content}
-			{/* {
-				pokemonList.length > 0 ? (
-					pokemonList.map((item, index) => (
-						<div key={index}>
-							<img src={item.image} alt={item.name} />
-							{item.name}
-						</div>
-					))
-				) : null
-			} */}
-			{state.data.length > 0 && state.isLoading && <LoadingIndicator />}
+			{data.length > 0 && isLoading && <LoadingIndicator />}
 		</div>
-		// <PokemonList2 />
 	);
 };
 

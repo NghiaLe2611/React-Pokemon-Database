@@ -83,9 +83,9 @@ const PokemonTable = ({data,sortHandler, onLoadMore, getClassName}) => {
 				</table>
 				{data.length <= 0 && <p style={{ marginLeft: 30 }}>No result found. Please try again.</p>}
 			</div>
-			<button className={classes.button} onClick={onLoadMore}>
+			{/* <button className={classes.button} onClick={onLoadMore}>
 				Load more
-			</button>
+			</button> */}
 		</Fragment>
 	);
 };

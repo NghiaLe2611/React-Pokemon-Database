@@ -98,7 +98,7 @@ const PokemonType = () => {
                             typeData.pokemon.length ? typeData.pokemon.map(item => (
                                 <a href={`/pokemon/${item.pokemon.name}`} key={item.pokemon.name} className={classes.item}>
                                     <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getLastStringSegment(item.pokemon.url)}.png`} alt={item.pokemon.name} />
-                                    <span>{capitalizeFirstLetter(item.pokemon.name)}</span>
+                                    <span style={{padding: 5}}>{capitalizeFirstLetter(item.pokemon.name)}</span>
                                 </a>
                             )) : <p>No result</p>
                         }

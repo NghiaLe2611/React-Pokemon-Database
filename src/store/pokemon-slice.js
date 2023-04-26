@@ -27,8 +27,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const pokemonSlice = createSlice({
 	name: 'pokemons',
 	initialState: {
-		pokemonList: JSON.parse(localStorage.getItem('pokemonTableData')) || [],
-		nextUrl: localStorage.getItem('nextUrl') || 'https://pokeapi.co/api/v2/pokemon?limit=10'
+		pokemonList: [],
+		nextUrl: 'https://pokeapi.co/api/v2/pokemon?limit=20'
 	},
 	reducers: {
 		setPokemonData(state, action) {

@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const NavigationScroll = ({ children }) => {
 	const location = useLocation();
 	const { pathname } = location;
+	const scrollRef = useRef(null);
 
 	useEffect(() => {
-		console.log(111, pathname);
-
 		window.scrollTo({
 			top: 0,
 			left: 0,
@@ -15,7 +14,22 @@ const NavigationScroll = ({ children }) => {
 		});
 	}, [pathname]);
 
-	return children || null;
+	useEffect(() => {
+		const handlePopState = () => {
+			if (scrollRef.current) {
+				scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+			}
+		};
+		window.addEventListener('popstate', handlePopState);
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, []);
+
+	return (
+		<>
+			<div ref={scrollRef} />
+			{children || null}
+		</>
+	);
 };
 
 export default NavigationScroll;

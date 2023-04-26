@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect, useRef, Fragment, memo, useCallback } from 'react';
 import useOnScreen from '../../hooks/useOnScreen';
-import PokemonItem from './PokemonItem';
+import PokemonItem from './PokemonItem1';
 import LoadingIndicator from '../UI/LoadingIndicator';
 import SkeletonElement from '../UI/SkeletonElement';
 import useFetch from '../../hooks/useFetch';
@@ -11,38 +11,28 @@ import usePrevious from 'hooks/usePrevious';
 
 const LIMIT = 20;
 
-const PokemonList2 = () => {
+const PokemonList1 = () => {
 	const pokemonListStorage = JSON.parse(localStorage.getItem('pokemonList')) || [];
-
-	// const [offset, setOffset] = useState(0);
 	const [offset, setOffset] = useState(() => {
 		const savedOffset = parseInt(localStorage.getItem('offset'));
 		return savedOffset || 0;
 	});
-
-	// const [nextUrl, setNextUrl] = useState(null);
 	const [nextUrl, setNextUrl] = useState(() => {
 		const savedNextUrl = localStorage.getItem('nextUrl');
 		return savedNextUrl || null;
 	});
-
 	const [pokemonData, setPokemonData] = useState([]);
-	const prevPokemonData = usePrevious(pokemonData);
-
-	// const [pokemonList, setPokemonList] = useState([]);
 	const [pokemonList, setPokemonList] = useState(() => {
 		const savedData = localStorage.getItem('pokemonList');
 		const initialValue = JSON.parse(savedData);
 		return initialValue || [];
 	});
-
 	const [loadMore, setLoadMore] = useState(false);
 	const [filteredListPokemon, setFilteredListPokemon] = useState(null);
 
 	const loader = useRef();
-
 	const onScreen = useOnScreen(loader, '50px');
-
+	const prevPokemonData = usePrevious(pokemonData);
 	const { isLoading, error, fetchData: fetchPokemons } = useFetch();
 
 	// Get all pokemon data
@@ -120,25 +110,7 @@ const PokemonList2 = () => {
 		localStorage.setItem('nextUrl', nextUrl);
 	}, [nextUrl]);
 
-	// Clear localStorage when exit tab
-	/*
-    useEffect(() => {
-        // window.addEventListener('beforeunload', handleTabClosing)
-        window.addEventListener('unload', handleTabClosing)
-        return () => {
-            // window.removeEventListener('beforeunload', handleTabClosing)
-            window.removeEventListener('unload', handleTabClosing)
-        }
-    });
-    
-    const handleTabClosing = () => {
-        localStorage.removeItem('pokemonList');
-        localStorage.removeItem('offset');
-        localStorage.removeItem('nextUrl');
-    }
-    */
-
-	// Infinite scroll (auto fetch data when reached bottom)
+	// Infinite scroll using on screen
 	useEffect(() => {
 		if (onScreen && pokemonList.length > 0 && !error) {
 			if (nextUrl != null && (!filteredListPokemon || filteredListPokemon.length >= 0)) {
@@ -160,7 +132,7 @@ const PokemonList2 = () => {
 		return () => {
 			setLoadMore(false);
 		};
-	}, [onScreen]); // error, filteredListPokemon, pokemonList.length, nextUrl
+	}, [error, filteredListPokemon, nextUrl, onScreen, pokemonList.length]); // error, filteredListPokemon, pokemonList.length, nextUrl
 
 	const loadMorePokemon = () => {
 		// console.log('load more');
@@ -220,7 +192,7 @@ const PokemonList2 = () => {
 	let filteredListContent = (
 		<ul className={classes['list']}>
 			{filteredListPokemon &&
-				filteredListPokemon.map((name) => <PokemonItem key={name} item={name} type='filtered'></PokemonItem>)}
+				filteredListPokemon.map((name) => <PokemonItem key={name} item={name} type='filtered' />)}
 		</ul>
 	);
 
@@ -253,4 +225,4 @@ const PokemonList2 = () => {
 	);
 };
 
-export default memo(PokemonList2);
+export default memo(PokemonList1);

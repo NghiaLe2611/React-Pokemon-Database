@@ -5,7 +5,7 @@ const Navigation = () => {
     return (
         <header className={classes.header}>
              <h1 className={classes.title}>
-                <Link to="/">React Pokemon Database</Link>
+                <Link to="/">React Pokédex</Link>
             </h1>
         </header>
     )

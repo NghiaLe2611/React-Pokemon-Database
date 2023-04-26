@@ -1,6 +1,7 @@
 .pokemon-table {
     background-color: #fff;
     position: relative;
+
     &.is-sorting:after {
         content: "";
         position: absolute;
@@ -12,19 +13,23 @@
         background-color: #fff;
         opacity: 0.6;
     }
+
     thead {
         th {
             font-weight: 500;
+
             &:first-child {
                 width: 120px;
             }
         }
     }
+
     tr {
         &:hover {
             background-color: #fff9e0;
         }
     }
+
     th,
     td {
         vertical-align: middle;
@@ -32,17 +37,21 @@
         padding: 4px 10px;
         text-align: center;
     }
+
     th {
         padding: 8px 10px;
         font-size: 18px;
         background-color: #ebebe5;
     }
+
     td {
         font-size: 16px;
     }
+
     .sorting {
         cursor: pointer;
         position: relative;
+
         &:after {
             content: "";
             position: absolute;
@@ -57,15 +66,19 @@
             -webkit-mask: url(../assets/images/icon-sort.svg) no-repeat center / contain;
         }
     }
+
     .asc {
         background-color: #ecdfec;
+
         &:after {
             mask: url(../assets/images/icon-sortup.svg) no-repeat center / contain;
             -webkit-mask: url(../assets/images/icon-sortup.svg) no-repeat center / contain;
         }
     }
+
     .desc {
         background-color: #ecdfec;
+
         &:after {
             mask: url(../assets/images/icon-sortdown.svg) no-repeat center / contain;
             -webkit-mask: url(../assets/images/icon-sortdown.svg) no-repeat center / contain;
@@ -81,4 +94,46 @@
     color: #fff;
     cursor: pointer;
     margin: 50px auto;
+}
+
+@media (max-width: 1024px) {
+    .table-container {
+        overflow: auto;
+        width: 100%;
+
+        .pokemon-table {
+            width: 960px;
+
+            thead tr th {
+                min-width: 100px;
+
+                &:nth-child(2) {
+                    min-width: 140px;
+                }
+            }
+
+            th {
+                font-size: 15px;
+                padding: 10px 5px;
+            }
+
+            td {
+                font-size: 14px;
+                padding: 2px 5px;
+            }
+        }
+
+        &::-webkit-scrollbar {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            height: 7px
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background-color: rgba(169, 169, 169, .5);
+            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5)
+        }
+    }
 }
