@@ -11,7 +11,7 @@ const DataTable = ({ headCells, data, onSort, className }) => {
 							<th
 								key={item.name}
 								className={`${classes.sorting} ${className && className(item.name)}`}
-								style={{width: item.width ? item.width : 'auto'}}
+								style={{ width: item.width ? item.width : 'auto' }}
 								onClick={() => {
 									onSort && onSort(item.name);
 								}}
@@ -26,17 +26,17 @@ const DataTable = ({ headCells, data, onSort, className }) => {
 						data.map((item) => (
 							<tr key={item.id}>
 								{headCells.map((val) => (
-									<td key={val.name} className={val.className ? classes[val.className] : ""}>
-										{
-											val.display ? val.display(item[val.name]) : item[val.name]
-										}
+									<td key={val.name} className={val.className ? classes[val.className] : ''}>
+										{val.display ? val.display(item[val.name]) : item[val.name]}
 									</td>
 								))}
 							</tr>
 						))
 					) : (
 						<tr>
-							<td colSpan={headCells.length}>No data available</td>
+							<td colSpan={headCells.length} style={{ height: 80 }}>
+								No data available
+							</td>
 						</tr>
 					)}
 				</tbody>

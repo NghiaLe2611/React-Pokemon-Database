@@ -2,7 +2,7 @@ import { Fragment, memo } from 'react';
 import PokemonTableItem from 'components/Table/PokemonTableItem';
 import classes from 'scss/PokemonTable.module.scss';
 
-const PokemonTable = ({data,sortHandler, onLoadMore, getClassName}) => {
+const PokemonTable = ({ data, sortHandler, onLoadMore, getClassName }) => {
 	return (
 		<Fragment>
 			<div className={classes['table-container']}>
@@ -11,57 +11,48 @@ const PokemonTable = ({data,sortHandler, onLoadMore, getClassName}) => {
 						<tr>
 							<th
 								className={`${classes.sorting} ${getClassName('id')}`}
-								onClick={() => sortHandler('id')}
-							>
+								onClick={() => sortHandler('id')}>
 								#
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('name')}`}
-								onClick={() => sortHandler('name')}
-							>
+								onClick={() => sortHandler('name')}>
 								Name
 							</th>
 							<th>Type</th>
 							<th
 								className={`${classes.sorting} ${getClassName('total')}`}
-								onClick={() => sortHandler('total')}
-							>
+								onClick={() => sortHandler('total')}>
 								Total
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('hp')}`}
-								onClick={() => sortHandler('hp')}
-							>
+								onClick={() => sortHandler('hp')}>
 								HP
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('attack')}`}
-								onClick={() => sortHandler('attack')}
-							>
+								onClick={() => sortHandler('attack')}>
 								Attack
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('defense')}`}
-								onClick={() => sortHandler('defense')}
-							>
+								onClick={() => sortHandler('defense')}>
 								Defense
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('sp-attack')}`}
-								onClick={() => sortHandler('sp-attack')}
-							>
+								onClick={() => sortHandler('sp-attack')}>
 								Sp. Atk
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('sp-defense')}`}
-								onClick={() => sortHandler('sp-defense')}
-							>
+								onClick={() => sortHandler('sp-defense')}>
 								Sp. Def
 							</th>
 							<th
 								className={`${classes.sorting} ${getClassName('speed')}`}
-								onClick={() => sortHandler('speed')}
-							>
+								onClick={() => sortHandler('speed')}>
 								Speed
 							</th>
 						</tr>

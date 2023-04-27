@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useCallback } from 'react';
+import { useState, useEffect, Fragment, useCallback, useMemo } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import LoadingIndicator from 'components/UI/LoadingIndicator';
 import { capitalizeFirstLetter, convertPokemonInfo, formatStatString, convertPokemonId } from 'helpers/helpers';
@@ -10,24 +10,33 @@ import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import DataTable from 'components/DataTable';
 import PokemonTypes from 'components/PokemonTypes';
+import PokemonMoves from './PokemonMoves';
 
 const BASE_MAX_STAT = 180;
 
 const movesHeadcells = [
 	{
+		name: 'level_learned_at',
+		label: 'Lv.',
+	},
+	{
 		name: 'name',
 		label: 'Move',
 		display: (value) => {
-			return <Link to={`/move/${value}`}>{formatStatString(value)}</Link>
+			return <Link to={`/move/${value}`}>{formatStatString(value)}</Link>;
 		},
 		className: 'link',
-		width: 200
+		width: 200,
 	},
 	{
 		name: 'type',
 		label: 'Type',
 		display: (value) => {
-			return <Link to={`/pokemon/type/${value}`} className={`color-${value}`}>{value}</Link>
+			return (
+				<Link to={`/pokemon/type/${value}`} className={`color-${value}`}>
+					{value}
+				</Link>
+			);
 		},
 		className: 'type',
 	},
@@ -35,18 +44,24 @@ const movesHeadcells = [
 		name: 'cate',
 		label: 'Cat.',
 		display: (value) => {
-			return <img style={{width: 30}} src={`/images/move-${value}.png`} alt={value} title={value} />
+			return <img style={{ width: 30 }} src={`/images/move-${value}.png`} alt={value} title={value} />;
 		},
 	},
 	{
 		name: 'power',
-		label: 'Power'
+		label: 'Power',
+		display: (value) => {
+			return <>{value ? value : '—'}</>;
+		},
 	},
 	{
 		name: 'accuracy',
-		label: 'Accuracy'
-	}
-]
+		label: 'Accuracy',
+		display: (value) => {
+			return <>{value ? value : '—'}</>;
+		},
+	},
+];
 
 // Animation Progress Bar using styled-components
 const progressAnimation = keyframes`
@@ -77,7 +92,6 @@ const PokemonDetail = () => {
 	const [evolutionChain, setEvolutionChain] = useState(null);
 	const [types, setTypes] = useState(null);
 	const [stats, setStats] = useState(null);
-	const [moves, setMoves] = useState([]);
 	const [imageSrc, setImageSrc] = useState('');
 
 	const { isLoading, error, fetchData: fetchPokemon } = useFetch();
@@ -158,32 +172,7 @@ const PokemonDetail = () => {
 				}
 			});
 
-			const moveUrls = pokemonDetail.moves
-				.filter((item) =>
-					item.version_group_details.some((detail) => detail.move_learn_method.name === 'level-up')
-				)
-				.map(
-					(move) =>
-						// name: move.move.name,
-						// level_learned_at: move.version_group_details.find(
-						// 	(detail) => detail.move_learn_method.name === 'level-up'
-						// ).level_learned_at,
-						move.move.url
-				);
-
-			moveUrls.forEach(async (url) => {
-				const res = await axios.get(url);
-				const { data } = res;
-				const move = {
-					id: data.id,
-					name: data.name,
-					cate: data.damage_class.name,
-					accuracy: data.accuracy,
-					power: data.power,
-					type: data.type.name,
-				};
-				setMoves(prevMoves => [...prevMoves, move]);
-			});
+			
 		}
 	}, [pokemonDetail]);
 
@@ -262,14 +251,12 @@ const PokemonDetail = () => {
 					<h3 className={classes.heading}>Moves learned by {capitalizeFirstLetter(pokemonDetail.name)}</h3>
 					<div className={classes.moves}>
 						<h4 className={classes.h4}>Moves learnt by level up</h4>
-						<DataTable 
-							headCells={movesHeadcells}
-							data={moves}
-						/>
+						<PokemonMoves type='level-up' data={pokemonDetail.moves} />
 					</div>
 
 					<div className={classes.moves}>
 						<h4 className={classes.h4}>Moves learnt by TM</h4>
+						<PokemonMoves type='machine' data={pokemonDetail.moves} />
 					</div>
 				</div>
 				<div className={classes['wrap-evolution-chain']}>
