@@ -9,7 +9,7 @@ const PokemonTypes = ({ types }) => {
 			{types &&
 				types.map((color) => (
 					<li key={color}>
-						<Link to={`/pokemon/type/${color}`} className={classes[`color-${color}`]}>
+						<Link to={`/pokemon/type/${color}`} className={`color ${classes[`color-${color}`]}`}>
 							{capitalizeFirstLetter(color)}
 						</Link>
 					</li>

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import classes from './DataTable.module.scss';
 
-const DataTable = ({ headCells, data, onSort, className }) => {
+const DataTable = ({ headCells, data, requestSort, sortConfig, className }) => {
 	return (
 		<div className={classes['table-container']}>
 			<table className={classes['data-table']}>
@@ -13,7 +13,7 @@ const DataTable = ({ headCells, data, onSort, className }) => {
 								className={`${classes.sorting} ${className && className(item.name)}`}
 								style={{ width: item.width ? item.width : 'auto' }}
 								onClick={() => {
-									onSort && onSort(item.name);
+									requestSort && requestSort(item.name);
 								}}
 								align={item.align ? item.align : 'left'}>
 								{item.label}

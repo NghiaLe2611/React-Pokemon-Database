@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { memo, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import DataTable from 'components/DataTable';
 import { capitalizeFirstLetter, formatStatString } from 'helpers/helpers';
-import { memo, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSortableData } from 'hooks/useSortableData';
 
 const movesHeadcells = [
 	{
@@ -26,7 +27,7 @@ const movesHeadcells = [
 		label: 'Type',
 		display: (value) => {
 			return (
-				<Link to={`/pokemon/type/${value}`} className={`color-${value}`}>
+				<Link to={`/pokemon/type/${value}`} className={`color color-${value}`}>
 					{value}
 				</Link>
 			);
@@ -37,7 +38,14 @@ const movesHeadcells = [
 		name: 'cate',
 		label: 'Cat.',
 		display: (value) => {
-			return <img style={{ width: 30 }} src={`/images/move-${value}.png`} alt={value} title={capitalizeFirstLetter(value)} />;
+			return (
+				<img
+					style={{ width: 30 }}
+					src={`/images/move-${value}.png`}
+					alt={value}
+					title={capitalizeFirstLetter(value)}
+				/>
+			);
 		},
 	},
 	{
@@ -63,12 +71,8 @@ function getLevelLearnt(list, name) {
 
 const PokemonMoves = ({ data, type }) => {
 	const [moves, setMoves] = useState([]);
-
-	const allMoves = useMemo(() => {
-		return [...moves].sort((a, b) => {
-			return a.level_learned_at - b.level_learned_at;
-		});
-	}, [moves]);
+	const { items, requestSort, sortConfig } = useSortableData(moves);
+	// { key: 'level_learned_at', direction: SORT_ASC }
 
 	useEffect(() => {
 		if (data.length) {
@@ -98,8 +102,6 @@ const PokemonMoves = ({ data, type }) => {
 					}));
 			}
 
-			console.log(listMove);
-
 			const listUrl = listMove.map((move) => move.url);
 			listUrl.forEach(async (url) => {
 				const res = await axios.get(url);
@@ -118,7 +120,7 @@ const PokemonMoves = ({ data, type }) => {
 		}
 	}, [data, type]);
 
-	return <DataTable headCells={movesHeadcells} data={allMoves} />;
+	return <DataTable headCells={movesHeadcells} data={items} requestSort={requestSort} sortConfig={sortConfig} />;
 };
 
 export default memo(PokemonMoves);

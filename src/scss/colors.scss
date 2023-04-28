@@ -1,4 +1,16 @@
 .color {
+    display: inline-block;
+    width: 100%;
+    padding: 8px 4px;
+    font-size: 0.8rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    border-radius: 5px;
+
+    &:hover {
+        opacity: 0.7;
+    }
     &-fire {
         background-color: #fd7d24;
     }
