@@ -17,7 +17,7 @@ const movesHeadcells = [
 		name: 'name',
 		label: 'Move',
 		display: (value) => {
-			return <Link to={`/move/${value}`}>{formatStatString(value)}</Link>;
+			return <Link to={`/pokemon/move/${value}`}>{formatStatString(value)}</Link>;
 		},
 		className: 'link',
 		width: 200,

@@ -12,7 +12,8 @@ import PokemonList2 from 'components/List/PokemonList2';
 
 const HomePage = Loadable(lazy(() => import('pages/home')));
 const PokemonDetail = Loadable(lazy(() => import('pages/detail')));
-const PokemonType = Loadable(lazy(() => import('pages/type')));
+const PokemonType = Loadable(lazy(() => import('pages/types')));
+const PokemonMove = Loadable(lazy(() => import('pages/moves')));
 
 const routes = [
 	{
@@ -30,6 +31,12 @@ const routes = [
 			{
 				path: '/pokemon/type/:pokemonType',
 				element: <PokemonType />,
+				nodeRef: createRef(),
+				exact: true,
+			},
+			{
+				path: '/pokemon/move/:pokemonMove',
+				element: <PokemonMove />,
 				nodeRef: createRef(),
 				exact: true,
 			},

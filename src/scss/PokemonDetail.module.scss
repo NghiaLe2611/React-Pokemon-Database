@@ -1,4 +1,5 @@
 @import "colors";
+
 .title {
     font-weight: 500;
     font-size: 35px;
@@ -23,8 +24,8 @@
 .wrap-pokemon-detail {
     display: flex;
     flex-wrap: wrap;
-    padding: 20px 20px 30px 20px;
-    margin: 0 auto 50px auto;
+    // padding: 20px 20px 30px 20px;
+    // margin: 0 auto 50px auto;
     >.img {
         padding: 0px 50px;
         margin-bottom: 20px;
@@ -167,7 +168,7 @@
         margin-bottom: 80px;
     }
     .wrap-pokemon-detail {
-        padding: 30px 50px;
+        // padding: 30px 50px;
         >.img {
             padding: 0;
             margin: 0 50px 0 0;

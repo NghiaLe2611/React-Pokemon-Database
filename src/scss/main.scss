@@ -63,6 +63,22 @@ main {
     border-radius: 4px;
     background-color: #fff;
     min-height: 100vh;
+    padding: 25px;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 35px;
+    margin-bottom: 30px;
+    width: 100%;
+    text-align: center;
+}
+
+.heading {
+    font-weight: 500;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 @font-face {
@@ -146,5 +162,19 @@ main {
 @media (max-width: 768px) {
     .container {
         padding: 0 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .title {
+        font-size: 45px;
+        margin-bottom: 80px;
+    }
+    .heading {
+        text-align: left;
+        font-size: 36px;
+    }
+    .content{
+        padding: 40px;
     }
 }
