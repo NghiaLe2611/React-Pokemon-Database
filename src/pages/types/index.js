@@ -1,11 +1,11 @@
 import { useState, useEffect, Fragment } from 'react';
 import { useParams } from 'react-router';
-import LoadingIndicator from 'components/UI/LoadingIndicator';
-import { capitalizeFirstLetter, getLastStringSegment } from 'helpers/helpers';
-import useFetch from 'hooks/useFetch';
-import classes from 'scss/PokemonType.module.scss';
-import prosIcon from 'assets/images/icon-pros.svg';
-import consIcon from 'assets/images/icon-cons.svg';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import { capitalizeFirstLetter, getLastStringSegment } from '@/helpers';
+import useFetch from '@/hooks/useFetch';
+import classes from '@/scss/PokemonType.module.scss';
+import prosIcon from '@/assets/images/icon-pros.svg';
+import consIcon from '@/assets/images/icon-cons.svg';
 
 const PokemonType = () => {
 	const { pokemonType } = useParams();

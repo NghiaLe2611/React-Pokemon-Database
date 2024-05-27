@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import LoadingIndicator from 'components/UI/LoadingIndicator';
-import { capitalizeFirstLetter, formatStatString, getLastStringSegment } from 'helpers/helpers';
-import useFetch from 'hooks/useFetch';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import { capitalizeFirstLetter, formatStatString, getLastStringSegment } from '@/helpers';
+import useFetch from '@/hooks/useFetch';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import classes from 'scss/PokemonMove.module.scss';
-import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
+import classes from '@/scss/PokemonMove.module.scss';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const PokemonMove = () => {
 	const { pokemonMove } = useParams();

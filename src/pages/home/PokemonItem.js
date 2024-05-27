@@ -1,7 +1,7 @@
 import { Fragment, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
-import classes from 'scss/PokemonItem.module.scss';
-import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../../helpers/helpers';
+import classes from '@/scss/PokemonItem.module.scss';
+import { capitalizeFirstLetter, convertPokemonId, getLinkSuggestion } from '../../helpers';
 
 const PokemonItem = forwardRef((props, ref) => {
 	const { id, name, types } = props.item;

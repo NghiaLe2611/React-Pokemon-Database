@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, Fragment } from 'react';
-import { useCallback } from 'react/cjs/react.development';
+import { useState, useCallback, useEffect, useMemo, Fragment } from 'react';
 import classes from '../scss/PokemonTable.module.scss';
 import PokemonTableItem from './PokemonTableItem';
 import LoadingIndicator from './UI/LoadingIndicator';

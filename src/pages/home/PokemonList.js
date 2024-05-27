@@ -1,7 +1,7 @@
-import { forwardRef, useRef, useCallback, memo, useEffect, useState, useReducer } from 'react';
+import classes from '@/scss/PokemonList.module.scss';
+import { memo, useEffect, useReducer, useRef } from 'react';
+import { initialState, pokemonReducer } from '@/store/reducers/pokemonReducer';
 import PokemonItem from './PokemonItem';
-import classes from 'scss/PokemonList.module.scss';
-import { initialState, pokemonReducer } from 'store/reducers/pokemonReducer';
 
 const PokemonList = ({ data, onLoadMore }) => {
 	const [state, dispatchState] = useReducer(pokemonReducer, initialState);

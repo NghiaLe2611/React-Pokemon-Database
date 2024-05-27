@@ -5,9 +5,10 @@
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
     "prettier.useTabs": true,
-    "prettier.jsxBracketSameLine": true,
+    "prettier.bracketSameLine": true,
     "files.associations": {
         "*.js": "javascriptreact"
     },
-    "javascript.validate.enable": true
+    "javascript.validate.enable": true,
+    "typescript.validate.enable": false
 }

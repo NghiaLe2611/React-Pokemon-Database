@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import PokemonItem from './PokemonItem2';
 import axios from 'axios';
-import classes from 'scss/PokemonList.module.scss';
-import LoadingIndicator from 'components/UI/LoadingIndicator';
+import classes from '@/scss/PokemonList.module.scss';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
 
 const LIMIT = 20;
 

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import classes from './PokemonTypes.module.scss';
 import { Link } from 'react-router-dom';
-import { capitalizeFirstLetter } from 'helpers/helpers';
+import { capitalizeFirstLetter } from '@/helpers';
 
 const PokemonTypes = ({ types }) => {
 	return (

@@ -7,7 +7,7 @@ import SkeletonElement from '../UI/SkeletonElement';
 import useFetch from '../../hooks/useFetch';
 import SearchPokemon from '../SearchPokemon';
 import classes from '../../scss/PokemonList.module.scss';
-import usePrevious from 'hooks/usePrevious';
+import usePrevious from '@/hooks/usePrevious';
 
 const LIMIT = 20;
 

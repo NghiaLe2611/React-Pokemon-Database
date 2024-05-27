@@ -1,6 +1,6 @@
-import ScrollToTop from 'components/UI/ScrollToTop';
+import ScrollToTop from '@/components/UI/ScrollToTop';
 import { Helmet } from 'react-helmet';
-import AppRoutes from 'routes';
+import AppRoutes from '@/routes';
 
 function App() {
 	return (

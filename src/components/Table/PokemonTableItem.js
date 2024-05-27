@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
 	capitalizeFirstLetter,
 	convertPokemonId,
-} from '../../helpers/helpers';
+} from '../../helpers';
 import classes from '../../scss/PokemonTableItem.module.scss'
         
 const PokemonTableItem = (props) => {

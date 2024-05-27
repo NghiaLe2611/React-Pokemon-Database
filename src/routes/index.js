@@ -1,19 +1,19 @@
 import { Fragment, createRef, lazy } from 'react';
 import { useRoutes } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import Loadable from 'components/UI/Loadable';
-import Root from 'components/UI/Root';
-import NotFound from 'pages/NotFound';
+import Loadable from '@/components/UI/Loadable';
+import Root from '@/components/UI/Root';
+import NotFound from '@/pages/NotFound';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
-import Navigation from 'components/UI/Navigation';
-import Footer from 'components/UI/Footer';
-import PokemonList1 from 'components/List/PokemonList1';
-import PokemonList2 from 'components/List/PokemonList2';
+import Navigation from '@/components/UI/Navigation';
+import Footer from '@/components/UI/Footer';
+import PokemonList1 from '@/components/List/PokemonList1';
+import PokemonList2 from '@/components/List/PokemonList2';
 
-const HomePage = Loadable(lazy(() => import('pages/home')));
-const PokemonDetail = Loadable(lazy(() => import('pages/detail')));
-const PokemonType = Loadable(lazy(() => import('pages/types')));
-const PokemonMove = Loadable(lazy(() => import('pages/moves')));
+const HomePage = Loadable(lazy(() => import('@/pages/home')));
+const PokemonDetail = Loadable(lazy(() => import('@/pages/detail')));
+const PokemonType = Loadable(lazy(() => import('@/pages/types')));
+const PokemonMove = Loadable(lazy(() => import('@/pages/moves')));
 
 const routes = [
 	{

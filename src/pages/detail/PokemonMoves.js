@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { memo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import DataTable from 'components/DataTable';
-import { capitalizeFirstLetter, formatStatString } from 'helpers/helpers';
-import { useSortableData } from 'hooks/useSortableData';
+import DataTable from '@/components/DataTable';
+import { capitalizeFirstLetter, formatStatString } from '@/helpers';
+import { useSortableData } from '@/hooks/useSortableData';
 
 const movesHeadcells = [
 	{

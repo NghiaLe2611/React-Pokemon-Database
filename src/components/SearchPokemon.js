@@ -1,7 +1,7 @@
 import classes from '../scss/SearchPokemon.module.scss';
 import iconSearch from '../assets/images/icon-search.svg';
 import { useState, useEffect, useRef } from 'react';
-import { capitalizeFirstLetter, getLinkSuggestion } from '../helpers/helpers';
+import { capitalizeFirstLetter, getLinkSuggestion } from '../helpers';
 
 // function debounce (fn, delay) {
 //     return args => {

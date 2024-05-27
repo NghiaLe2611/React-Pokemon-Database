@@ -1,15 +1,14 @@
-import { useState, useEffect, Fragment, useCallback, useMemo } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
-import LoadingIndicator from 'components/UI/LoadingIndicator';
-import { capitalizeFirstLetter, convertPokemonInfo, formatStatString, convertPokemonId } from 'helpers/helpers';
-import styled, { keyframes, css } from 'styled-components';
-import useFetch from 'hooks/useFetch';
-import NotFound from 'pages/NotFound';
-import classes from 'scss/PokemonDetail.module.scss';
-import { Helmet } from 'react-helmet';
+import PokemonTypes from '@/components/PokemonTypes';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import useFetch from '@/hooks/useFetch';
+import NotFound from '@/pages/NotFound';
+import classes from '@/scss/PokemonDetail.module.scss';
 import axios from 'axios';
-import DataTable from 'components/DataTable';
-import PokemonTypes from 'components/PokemonTypes';
+import { capitalizeFirstLetter, convertPokemonId, convertPokemonInfo, formatStatString } from '@/helpers';
+import { Fragment, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import styled, { css, keyframes } from 'styled-components';
 import PokemonMoves from './PokemonMoves';
 
 const BASE_MAX_STAT = 180;

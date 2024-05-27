@@ -1,6 +1,6 @@
 import { Fragment, memo } from 'react';
-import PokemonTableItem from 'components/Table/PokemonTableItem';
-import classes from 'scss/PokemonTable.module.scss';
+import PokemonTableItem from '@/components/Table/PokemonTableItem';
+import classes from '@/scss/PokemonTable.module.scss';
 
 const PokemonTable = ({ data, sortHandler, onLoadMore, getClassName }) => { 
 	return (

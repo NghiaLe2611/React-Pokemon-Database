@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, useCallback, useReducer, Fragment, useRef } from 'react';
-import LoadingIndicator from 'components/UI/LoadingIndicator';
-import { apiUrl, initialState, pokemonReducer } from 'store/reducers/pokemonReducer';
-import classes from 'scss/PokemonMain.module.scss';
-import { capitalizeFirstLetter } from 'helpers/helpers';
+import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import { apiUrl, initialState, pokemonReducer } from '@/store/reducers/pokemonReducer';
+import classes from '@/scss/PokemonMain.module.scss';
+import { capitalizeFirstLetter } from '@/helpers';
 import PokemonList from './PokemonList';
 import PokemonTable from './PokemonTable';
 import axios from 'axios';
-import useDebounce from 'hooks/useDebounce';
+import useDebounce from '@/hooks/useDebounce';
 
 const typeArr = [
 	'normal',
