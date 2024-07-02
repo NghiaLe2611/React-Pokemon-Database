@@ -6,6 +6,7 @@
     "prettier.tabWidth": 4,
     "prettier.useTabs": true,
     "prettier.bracketSameLine": true,
+    "prettier.bracketSpacing": true,
     "files.associations": {
         "*.js": "javascriptreact"
     },
