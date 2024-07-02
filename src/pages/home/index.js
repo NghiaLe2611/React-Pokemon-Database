@@ -222,7 +222,7 @@ const PokemonMainPage = () => {
 		const handleScroll = () => {
 			const isBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 200;
 			if (isBottom) {
-				console.log('loadMoreData');
+				// console.log('loadMoreData');
 				loadMoreData();
 			}
 		};

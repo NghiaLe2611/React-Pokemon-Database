@@ -16,7 +16,6 @@ const PokemonTableList = (props) => {
         sortType: 'asc'
     });
 
-    console.log(props.view);
     const [isSorting, setIsSorting] = useState(false);
 
     const sortedPokemonList = useMemo(() => {

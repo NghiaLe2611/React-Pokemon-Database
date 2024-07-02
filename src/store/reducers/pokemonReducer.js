@@ -23,11 +23,15 @@ export const pokemonReducer = (state, action) => {
 				error: null,
 			};
 		case 'FETCH_SUCCESS':
+            // Check duplicating
+            const uniqueItems = new Set(state.data.map(item => item.id));
+            const filteredList = action.payload.list.filter(newItem => !uniqueItems.has(newItem.id));
+
 			return {
 				...state,
 				isLoading: false,
 				error: null,
-				data: state.data.concat(action.payload.list),
+				data: state.data.concat(filteredList),
 				total: action.payload.count,
 				nextUrl: action.payload.nextUrl,
 				hasMore: action.payload.hasMore,
