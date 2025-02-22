@@ -1,75 +1,75 @@
 import classes from '@/scss/PokemonList.module.scss';
-import { memo, useEffect, useReducer, useRef } from 'react';
-import { initialState, pokemonReducer } from '@/store/reducers/pokemonReducer';
+import { memo, useRef } from 'react';
 import PokemonItem from './PokemonItem';
 
-const PokemonList = ({ data, onLoadMore }) => {
-	const [state, dispatchState] = useReducer(pokemonReducer, initialState);
-	const { isLoading, nextUrl } = state;
-	const observer = useRef(null);
-	const lastItemRef = useRef(null);
+const PokemonList = ({ data, onLoadMore, loadingIds }) => {
+    // const { state } = usePokemon();
+    // const { isLoading, nextUrl } = state;
 
-	// Infinite scrolling
-	useEffect(() => {
-		if (isLoading) return;
+    const observer = useRef(null);
+    const lastItemRef = useRef(null);
 
-		if (observer.current) observer.current.disconnect();
+    // Infinite scrolling
+    // useEffect(() => {
+    //     if (isLoading) return;
 
-		observer.current = new IntersectionObserver((entries) => {
-			if (entries[0].isIntersecting && nextUrl) {
-				dispatchState({ type: 'FETCH_INIT' });
-			}
-		});
+    //     if (observer.current) observer.current.disconnect();
 
-		if (lastItemRef.current) observer.current.observe(lastItemRef.current);
-	}, [isLoading, nextUrl]);
+    //     observer.current = new IntersectionObserver((entries) => {
+    //         if (entries[0].isIntersecting && nextUrl) {
+    //             dispatchState({ type: 'FETCH_INIT' });
+    //         }
+    //     });
 
-	useEffect(() => {
-		if (isLoading && nextUrl) {
-			// onLoadMore();
-		}
-	}, [isLoading, nextUrl, onLoadMore]);
+    //     if (lastItemRef.current) observer.current.observe(lastItemRef.current);
+    // }, [isLoading, nextUrl]);
 
-	// useEffect(() => {
-	// 	// Here you can fetch more data and update the list
-	// 	// when the last item is intersecting
-	// 	const observer = new IntersectionObserver(
-	// 		(entries) => {
-	// 			const target = entries[0];
-	// 			if (target.isIntersecting) {
-	// 				// console.log('Last item is intersecting!');
-	// 			}
-	// 		},
-	// 		{ threshold: 1 }
-	// 	);
-	// 	if (lastItemRef.current) {
-	// 		observer.observe(lastItemRef.current);
-	// 	}
-	// 	return () => {
-	// 		observer.disconnect();
-	// 	};
-	// }, [lastItemRef]);
+    // useEffect(() => {
+    //     if (isLoading && nextUrl) {
+    //         // onLoadMore();
+    //     }
+    // }, [isLoading, nextUrl, onLoadMore]);
 
-	return (
-		<div>
-			<ul className={classes['list']}>
-				{data.length > 0 ? (
-					data.map((item, index) => {
-						if (data.length === index + 1) {
-							return <PokemonItem key={item.id} item={item} ref={lastItemRef} />;
-						} else {
-							return <PokemonItem key={item.id} item={item} />;
-						}
-					})
-				) : (
-					<p style={{ marginLeft: 30 }}>No result found. Please try again.</p>
-				)}
-			</ul>
-			{/* <button className={classes['load-btn']} onClick={onLoadMore}>
+    // useEffect(() => {
+    // 	// Here you can fetch more data and update the list
+    // 	// when the last item is intersecting
+    // 	const observer = new IntersectionObserver(
+    // 		(entries) => {
+    // 			const target = entries[0];
+    // 			if (target.isIntersecting) {
+    // 				// console.log('Last item is intersecting!');
+    // 			}
+    // 		},
+    // 		{ threshold: 1 }
+    // 	);
+    // 	if (lastItemRef.current) {
+    // 		observer.observe(lastItemRef.current);
+    // 	}
+    // 	return () => {
+    // 		observer.disconnect();
+    // 	};
+    // }, [lastItemRef]);
+
+    return (
+        <div>
+            <ul className={classes['list']}>
+                {data.length > 0 ? (
+                    data.map((item, index) => {
+                        if (data.length === index + 1) {
+                            return <PokemonItem key={item.id} item={item} ref={lastItemRef} loadingIds={loadingIds} />;
+                        } else {
+                            return <PokemonItem key={item.id} item={item} loadingIds={loadingIds} />;
+                        }
+                    })
+                ) : (
+                    <p style={{ marginLeft: 30 }}>No result found. Please try again.</p>
+                )}
+            </ul>
+            {/* <button className={classes['load-btn']} onClick={onLoadMore}>
 				Load more
 			</button> */}
-		</div>
-	);
+        </div>
+    );
 };
 
 export default memo(PokemonList);
