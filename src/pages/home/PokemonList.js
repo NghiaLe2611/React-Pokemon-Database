@@ -26,7 +26,7 @@ const PokemonList = ({ data, onLoadMore }) => {
 
 	useEffect(() => {
 		if (isLoading && nextUrl) {
-			// onLoadMore();
+			onLoadMore();
 		}
 	}, [isLoading, nextUrl, onLoadMore]);
 

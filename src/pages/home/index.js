@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import classes from '@/scss/PokemonMain.module.scss';
-import { useQueries, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import PokemonItem from './PokemonItem';
-import { useEffect, useState } from 'react';
 import LoadingIndicator from '@/components/UI/LoadingIndicator';
+import classes from '@/scss/PokemonMain.module.scss';
+import { useQueries } from '@tanstack/react-query';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import PokemonList from './PokemonList';
 
 const fetchPokemonDetail = async (url) => {
@@ -23,7 +22,6 @@ const fetchPokemonDetail = async (url) => {
 };
 
 const usePokemonDetails = (pokemonUrls) => {
-	console.log(222, pokemonUrls);
 	const queries = pokemonUrls.map((url) => ({
 		queryKey: ['pokemon', url],
 		queryFn: () => fetchPokemonDetail(url),
